@@ -1,0 +1,7 @@
+# Ignore artifacts:
+node_modules
+README.md
+package.json
+package-lock.json
+tsconfig.json
+.prettierrc
