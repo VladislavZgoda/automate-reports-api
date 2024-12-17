@@ -4,8 +4,7 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node index.js"
+    "start": "npx tsx --watch index.ts"
   },
   "repository": {
     "type": "git",
