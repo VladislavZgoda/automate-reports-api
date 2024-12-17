@@ -1,7 +1,9 @@
 import Fastify, { FastifyInstance } from "fastify";
 import { fastifyMultipart } from "@fastify/multipart";
-import fs from "fs";
+import { createWriteStream } from "node:fs";
 import { pipeline } from "stream/promises";
+import { folderExists } from "utils/fileSystemFunc.js";
+import { randomUUID } from "crypto";
 
 const fastify: FastifyInstance = Fastify({
   logger: true,
@@ -10,7 +12,24 @@ const fastify: FastifyInstance = Fastify({
 fastify.register(fastifyMultipart);
 
 fastify.post("/api/matritca/", async function handler(request, reply) {
-  return { hello: "world" };
+  const data = await request.file();
+
+  if (
+    data?.mimetype !==
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  ) {
+    reply.code(406).send({
+      message:
+        "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
+    });
+  }
+
+  if (data?.file) {
+    const fileName = `private_sector${randomUUID()}.xlsx`;
+    await folderExists("./upload");
+    await pipeline(data.file, createWriteStream(`./upload/${fileName}`));
+    reply.code(200).send();
+  }
 });
 
 try {
