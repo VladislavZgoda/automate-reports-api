@@ -1,6 +1,9 @@
 import exceljs from "exceljs";
+import { folderExists } from "utils/fileSystemFunc.js";
 
 export default async function parseMatritca(fileName: string) {
+  await folderExists('parsed-excel');
+
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(`upload/${fileName}`);
   const ws = wb.worksheets[0];
