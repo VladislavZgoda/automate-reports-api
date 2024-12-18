@@ -4,6 +4,7 @@ import { createWriteStream } from "node:fs";
 import { pipeline } from "stream/promises";
 import { folderExists } from "utils/fileSystemFunc.js";
 import { randomUUID } from "crypto";
+import parseMatritca from "parse-excel/parseMatritca.js";
 
 const fastify: FastifyInstance = Fastify({
   logger: true,
@@ -28,6 +29,7 @@ fastify.post("/api/matritca/", async function handler(request, reply) {
     const fileName = `private_sector${randomUUID()}.xlsx`;
     await folderExists("./upload");
     await pipeline(data.file, createWriteStream(`./upload/${fileName}`));
+    await parseMatritca(fileName);
     reply.code(200).send();
   }
 });
