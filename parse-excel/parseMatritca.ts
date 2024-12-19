@@ -18,7 +18,7 @@ export default async function parseMatritca(fileName: string) {
 }
 
 function unmerge(ws: exceljs.Worksheet) {
-  ws.getColumn("L").eachCell((cell, _rowNumber) => {
+  ws.getColumn("L").eachCell((cell) => {
     cell.unmerge();
   });
 }
@@ -60,7 +60,7 @@ function processSerialNumbers(ws: exceljs.Worksheet) {
 
   column.width = 15;
 
-  column.eachCell((cell, _rowNumber) => {
+  column.eachCell((cell) => {
     const cellValue = String(cell.value).trim();
     cell.numFmt = "@";
 
@@ -92,7 +92,7 @@ function processConsumerCode(ws: exceljs.Worksheet) {
 
   column.width = 15;
 
-  column.eachCell((cell, _rowNumber) => {
+  column.eachCell((cell) => {
     const cellValue = String(cell.value).trim();
     cell.numFmt = "@";
     cell.value = cellValue;
@@ -120,7 +120,7 @@ function processDeviseType(ws: exceljs.Worksheet) {
 
   column.width = 25;
 
-  column.eachCell((cell, _rowNumber) => {
+  column.eachCell((cell) => {
     cell.border = {
       top: { style: "thin" },
       left: { style: "thin" },
