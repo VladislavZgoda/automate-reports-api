@@ -1,5 +1,26 @@
 import exceljs from "exceljs";
+import type { Borders } from "exceljs";
 import { folderExists } from "utils/fileSystemFunc.js";
+
+type Alignment = {
+  vertical?:
+    | "middle"
+    | "top"
+    | "bottom"
+    | "distributed"
+    | "justify"
+    | undefined;
+};
+
+type Args = {
+  ws: exceljs.Worksheet;
+  alignment: Alignment;
+  font: {
+    name: string;
+    size: number;
+  };
+  border: Partial<Borders>;
+};
 
 export default async function parseMatritca(fileName: string) {
   await folderExists("parsed-excel");
@@ -8,11 +29,30 @@ export default async function parseMatritca(fileName: string) {
   const wb = await excel.xlsx.readFile(`upload/${fileName}`);
   const ws = wb.worksheets[0];
 
+  // ExcelJS при изменении выравнивания в одном столбце, изменяет и другие.
+  // Единственный вариант это делать выравнивание везде.
+  const alignment: Alignment = {
+    vertical: "middle",
+  };
+
+  const font = {
+    name: "Times New Roman",
+    size: 10,
+  };
+
+  const border: Partial<Borders> = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" },
+  };
+
   unmerge(ws);
   deleteRows(ws);
-  processDeviseType(ws);
-  processSerialNumbers(ws);
-  processConsumerCode(ws);
+  processConsumerCode({ ws, alignment, font, border });
+  processSerialNumbers({ ws, alignment, font, border });
+  processAddress({ ws, alignment, font, border });
+  processDeviseType({ ws, alignment, font, border });
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
 }
@@ -45,19 +85,26 @@ function checkValueForDelete(ws: exceljs.Worksheet, rowNumber: number) {
   return false;
 }
 
-function processSerialNumbers(ws: exceljs.Worksheet) {
+function processConsumerCode({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("B");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 15;
+
+  column.eachCell((cell) => {
+    const cellValue = String(cell.value).trim();
+    cell.numFmt = "@";
+    cell.value = cellValue;
+    cell.border = border;
+  });
+}
+
+function processSerialNumbers({ ws, alignment, font, border }: Args) {
   const column = ws.getColumn("C");
 
-  column.alignment = {
-    vertical: "middle",
-    horizontal: "right",
-  };
-
-  column.font = {
-    name: "Times New Roman",
-    size: 10,
-  };
-
+  column.alignment = alignment;
+  column.font = font;
   column.width = 15;
 
   column.eachCell((cell) => {
@@ -68,64 +115,30 @@ function processSerialNumbers(ws: exceljs.Worksheet) {
       cell.value = "0" + cellValue;
     }
 
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" },
-    };
+    cell.border = border;
   });
 }
 
-function processConsumerCode(ws: exceljs.Worksheet) {
-  const column = ws.getColumn("B");
+function processAddress({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("I");
 
-  column.alignment = {
-    vertical: "middle",
-    horizontal: "right",
-  };
-
-  column.font = {
-    name: "Times New Roman",
-    size: 10,
-  };
-
-  column.width = 15;
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 45;
 
   column.eachCell((cell) => {
-    const cellValue = String(cell.value).trim();
-    cell.numFmt = "@";
-    cell.value = cellValue;
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" },
-    };
+    cell.border = border;
   });
 }
 
-function processDeviseType(ws: exceljs.Worksheet) {
+function processDeviseType({ ws, alignment, font, border }: Args) {
   const column = ws.getColumn("K");
 
-  column.alignment = {
-    vertical: "middle",
-    horizontal: "left",
-  };
-
-  column.font = {
-    name: "Times New Roman",
-    size: 10,
-  };
-
-  column.width = 25;
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 22;
 
   column.eachCell((cell) => {
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" },
-    };
+    cell.border = border;
   });
 }
