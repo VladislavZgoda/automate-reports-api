@@ -59,6 +59,7 @@ export default async function parseMatritca(fileName: string) {
 
   unmerge(ws);
   deleteRows(ws);
+  rowCount({ ws, alignment, font, border });
   processConsumerCode({ ws, alignment, font, border });
   processSerialNumbers({ ws, alignment, font, border });
   processDate({ ws, alignment, font, border });
@@ -253,4 +254,23 @@ function processActivePower({ ws, alignment, font, border }: Args) {
 
     cell.border = border;
   });
+}
+
+function rowCount({ ws, alignment, font, border }: Args) {
+  let i = 3;
+  let j = 1;
+
+  while (i < ws.actualRowCount + 1) {
+    const cell = ws.getCell("A" + i);
+    cell.value = j;
+    cell.border = border;
+    i += 1;
+    j += 1;
+  }
+
+  const column = ws.getColumn("A");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 8;
 }
