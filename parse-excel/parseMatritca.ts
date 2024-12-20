@@ -57,7 +57,12 @@ export default async function parseMatritca(fileName: string) {
     right: { style: "thin" },
   };
 
+  // Столбец K и L обеденны (зачем не понятно) при экспорте из Sims Client.
   unmerge(ws);
+
+  // Вставить столбец после J для внесения даты АСКУЭ.
+  ws.spliceColumns(11, 0, []);
+
   deleteRows(ws);
   rowCount({ ws, alignment, font, border });
   processConsumerCode({ ws, alignment, font, border });
@@ -66,6 +71,7 @@ export default async function parseMatritca(fileName: string) {
   processActivePower({ ws, alignment, font, border });
   processAddress({ ws, alignment, font, border });
   processConsumer({ ws, alignment, font, border });
+  addAskueDate({ ws, alignment, font, border });
   processDeviseType({ ws, alignment, font, border });
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
@@ -152,7 +158,7 @@ function processAddress({ ws, alignment, font, border }: Args) {
 }
 
 function processDeviseType({ ws, alignment, font, border }: Args) {
-  const column = ws.getColumn("K");
+  const column = ws.getColumn("L");
 
   column.alignment = alignment;
   column.font = font;
@@ -180,7 +186,7 @@ function processDate({ ws, alignment, font, border }: Args) {
 
   column.alignment = alignment;
   column.font = font;
-  column.width = 12;
+  column.width = 10;
 
   column.eachCell((cell) => {
     cell.border = border;
@@ -273,4 +279,18 @@ function rowCount({ ws, alignment, font, border }: Args) {
   column.alignment = alignment;
   column.font = font;
   column.width = 8;
+}
+
+function addAskueDate({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("K");
+  const currentDate = new Date().toLocaleDateString("ru");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 10;
+
+  column.eachCell((cell) => {
+    cell.border = border;
+    cell.value = currentDate;
+  });
 }
