@@ -51,7 +51,9 @@ export default async function parseMatritca(fileName: string) {
   deleteRows(ws);
   processConsumerCode({ ws, alignment, font, border });
   processSerialNumbers({ ws, alignment, font, border });
+  processDate({ ws, alignment, font, border });
   processAddress({ ws, alignment, font, border });
+  processConsumer({ ws, alignment, font, border });
   processDeviseType({ ws, alignment, font, border });
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
@@ -76,9 +78,15 @@ function deleteRows(ws: exceljs.Worksheet) {
 }
 
 function checkValueForDelete(ws: exceljs.Worksheet, rowNumber: number) {
-  const cellValue = ws.getCell("B" + rowNumber).value?.toString();
+  const consumerCode = ws.getCell("B" + rowNumber).value?.toString();
 
-  if (cellValue === undefined || !cellValue.trim().startsWith("230700")) {
+  if (consumerCode === undefined || !consumerCode.trim().startsWith("230700")) {
+    return true;
+  }
+
+  const consumer = ws.getCell("J" + rowNumber).value?.toString();
+
+  if (consumer?.trim().toLowerCase() === "одпу") {
     return true;
   }
 
@@ -137,6 +145,30 @@ function processDeviseType({ ws, alignment, font, border }: Args) {
   column.alignment = alignment;
   column.font = font;
   column.width = 22;
+
+  column.eachCell((cell) => {
+    cell.border = border;
+  });
+}
+
+function processConsumer({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("J");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 30;
+
+  column.eachCell((cell) => {
+    cell.border = border;
+  });
+}
+
+function processDate({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("D");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 12;
 
   column.eachCell((cell) => {
     cell.border = border;
