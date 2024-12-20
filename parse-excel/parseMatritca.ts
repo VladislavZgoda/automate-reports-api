@@ -10,6 +10,15 @@ type Alignment = {
     | "distributed"
     | "justify"
     | undefined;
+  horizontal?:
+    | "distributed"
+    | "justify"
+    | "left"
+    | "right"
+    | "center"
+    | "fill"
+    | "centerContinuous"
+    | undefined;
 };
 
 type Args = {
@@ -33,6 +42,7 @@ export default async function parseMatritca(fileName: string) {
   // Единственный вариант это делать выравнивание везде.
   const alignment: Alignment = {
     vertical: "middle",
+    horizontal: "left",
   };
 
   const font = {
@@ -52,6 +62,7 @@ export default async function parseMatritca(fileName: string) {
   processConsumerCode({ ws, alignment, font, border });
   processSerialNumbers({ ws, alignment, font, border });
   processDate({ ws, alignment, font, border });
+  processActivePower({ ws, alignment, font, border });
   processAddress({ ws, alignment, font, border });
   processConsumer({ ws, alignment, font, border });
   processDeviseType({ ws, alignment, font, border });
@@ -171,6 +182,75 @@ function processDate({ ws, alignment, font, border }: Args) {
   column.width = 12;
 
   column.eachCell((cell) => {
+    cell.border = border;
+  });
+}
+
+function processActivePower({ ws, alignment, font, border }: Args) {
+  const t1 = ws.getColumn("E");
+  const t2 = ws.getColumn("F");
+  const t3 = ws.getColumn("G");
+  const t = ws.getColumn("H");
+
+  const width = 12;
+
+  t1.alignment = alignment;
+  t1.font = font;
+  t1.width = width;
+
+  t1.eachCell((cell) => {
+    const value = Number(cell.value);
+
+    if (value) {
+      cell.numFmt = "@";
+      cell.value = value.toFixed(2);
+    }
+
+    cell.border = border;
+  });
+
+  t2.alignment = alignment;
+  t2.font = font;
+  t2.width = width;
+
+  t2.eachCell((cell) => {
+    const value = Number(cell.value);
+
+    if (value) {
+      cell.numFmt = "@";
+      cell.value = value.toFixed(2);
+    }
+
+    cell.border = border;
+  });
+
+  t3.alignment = alignment;
+  t3.font = font;
+  t3.width = width;
+
+  t3.eachCell((cell) => {
+    const value = Number(cell.value);
+
+    if (value) {
+      cell.numFmt = "@";
+      cell.value = value.toFixed(2);
+    }
+
+    cell.border = border;
+  });
+
+  t.alignment = alignment;
+  t.font = font;
+  t.width = width;
+
+  t.eachCell((cell) => {
+    const value = Number(cell.value);
+
+    if (value) {
+      cell.numFmt = "@";
+      cell.value = value.toFixed(2);
+    }
+
     cell.border = border;
   });
 }
