@@ -74,6 +74,7 @@ export default async function parseMatritca(fileName: string) {
   addAskueDate({ ws, alignment, font, border });
   processDeviseType({ ws, alignment, font, border });
   readingsMethod({ ws, alignment, font, border });
+  addTP({ ws, alignment, font, border });
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
 }
@@ -302,4 +303,21 @@ function readingsMethod({ ws, alignment, font, border }: Args) {
     cell.border = border;
     cell.value = "УСПД";
   });
+}
+
+function addTP({ ws, alignment, font, border }: Args) {
+  const re = /^ТП-\d{1,3}П?/i;
+
+  for (let i = 3; i < ws.actualRowCount + 1; i++) {
+    const tp = ws
+      .getCell("I" + i)
+      .value?.toString()
+      .match(re);
+
+    const cell = ws.getCell("N" + i);
+    cell.value = tp?.[0];
+    cell.alignment = alignment;
+    cell.font = font;
+    cell.border = border;
+  }
 }
