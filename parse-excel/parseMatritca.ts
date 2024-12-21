@@ -73,6 +73,7 @@ export default async function parseMatritca(fileName: string) {
   processConsumer({ ws, alignment, font, border });
   addAskueDate({ ws, alignment, font, border });
   processDeviseType({ ws, alignment, font, border });
+  readingsMethod({ ws, alignment, font, border });
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
 }
@@ -292,5 +293,18 @@ function addAskueDate({ ws, alignment, font, border }: Args) {
   column.eachCell((cell) => {
     cell.border = border;
     cell.value = currentDate;
+  });
+}
+
+function readingsMethod({ ws, alignment, font, border }: Args) {
+  const column = ws.getColumn("M");
+
+  column.alignment = alignment;
+  column.font = font;
+  column.width = 10;
+
+  column.eachCell((cell) => {
+    cell.border = border;
+    cell.value = "УСПД";
   });
 }
