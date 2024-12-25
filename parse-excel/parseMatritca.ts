@@ -45,6 +45,11 @@ export default async function parseMatritca(fileName: string) {
     horizontal: "left",
   };
 
+  const alignmentCenter: Alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
+
   const font = {
     name: "Times New Roman",
     size: 10,
@@ -75,7 +80,8 @@ export default async function parseMatritca(fileName: string) {
   processDeviseType({ ws, alignment, font, border });
   readingsMethod({ ws, alignment, font, border });
   addTP({ ws, alignment, font, border });
-  tableHeaders(ws, border);
+  tableHeaders(ws, alignmentCenter, border);
+  mainHeader(ws, alignmentCenter);
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
 }
@@ -323,7 +329,11 @@ function addTP({ ws, alignment, font, border }: Args) {
   }
 }
 
-function tableHeaders(ws: exceljs.Worksheet, border: Partial<Borders>) {
+function tableHeaders(
+  ws: exceljs.Worksheet,
+  alignment: Alignment,
+  border: Partial<Borders>,
+) {
   const row = ws.getRow(2);
   row.getCell("A").value = "№ п/п";
   row.getCell("B").value = "Л/С";
@@ -350,9 +360,8 @@ function tableHeaders(ws: exceljs.Worksheet, border: Partial<Borders>) {
 
   row.eachCell((cell) => {
     cell.alignment = {
+      ...alignment,
       wrapText: true,
-      vertical: "middle",
-      horizontal: "left",
     };
     cell.border = border;
     cell.font = {
@@ -361,4 +370,21 @@ function tableHeaders(ws: exceljs.Worksheet, border: Partial<Borders>) {
       bold: true,
     };
   });
+}
+
+function mainHeader(ws: exceljs.Worksheet, alignment: Alignment) {
+  ws.unMergeCells("A1:K1");
+  ws.mergeCells("A1:N1");
+
+  const cell = ws.getCell("A1");
+  cell.value =
+    "Ведомость дистанционного снятия показаний посредствам АСКУЭ и ридера";
+
+  cell.font = {
+    name: "Times New Roman",
+    size: 14,
+    bold: true,
+  };
+
+  cell.alignment = alignment;
 }
