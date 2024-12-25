@@ -75,6 +75,7 @@ export default async function parseMatritca(fileName: string) {
   processDeviseType({ ws, alignment, font, border });
   readingsMethod({ ws, alignment, font, border });
   addTP({ ws, alignment, font, border });
+  tableHeaders(ws, border);
 
   excel.xlsx.writeFile("parsed-excel/test.xlsx");
 }
@@ -284,7 +285,7 @@ function addAskueDate({ ws, alignment, font, border }: Args) {
 
   column.alignment = alignment;
   column.font = font;
-  column.width = 10;
+  column.width = 16;
 
   column.eachCell((cell) => {
     cell.border = border;
@@ -297,7 +298,7 @@ function readingsMethod({ ws, alignment, font, border }: Args) {
 
   column.alignment = alignment;
   column.font = font;
-  column.width = 8;
+  column.width = 18;
 
   column.eachCell((cell) => {
     cell.border = border;
@@ -320,4 +321,44 @@ function addTP({ ws, alignment, font, border }: Args) {
     cell.font = font;
     cell.border = border;
   }
+}
+
+function tableHeaders(ws: exceljs.Worksheet, border: Partial<Borders>) {
+  const row = ws.getRow(2);
+  row.getCell("A").value = "№ п/п";
+  row.getCell("B").value = "Л/С";
+  row.getCell("C").value = "Номер_ПУ";
+  row.getCell("D").value = "Дата";
+  row.getCell("E").value = "Т1";
+  row.getCell("F").value = "Т2";
+  row.getCell("G").value = "Т3";
+  row.getCell("H").value = "Т сумм";
+  row.getCell("I").value = "Адрес";
+  row.getCell("J").value = "ФИО абонента";
+  row.getCell("K").value = "Дата_АСКУЭ";
+  row.getCell("L").value = "Тип ПУ";
+  row.getCell("M").value = "Способ снятия показаний";
+  row.getCell("N").value = "ТП";
+
+  row.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "ffffff" },
+  };
+
+  row.height = 40;
+
+  row.eachCell((cell) => {
+    cell.alignment = {
+      wrapText: true,
+      vertical: "middle",
+      horizontal: "left",
+    };
+    cell.border = border;
+    cell.font = {
+      name: "Times New Roman",
+      size: 12,
+      bold: true,
+    };
+  });
 }
