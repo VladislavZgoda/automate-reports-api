@@ -42,6 +42,7 @@ export default async function parseMatritca(
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(`upload/${fileName}`);
   const ws = wb.worksheets[0];
+  ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
   // ExcelJS при изменении выравнивания в одном столбце, изменяет и другие.
   // Единственный вариант это делать выравнивание везде.
