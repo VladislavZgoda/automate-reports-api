@@ -88,7 +88,8 @@ export default async function parseMatritca(
   tableHeaders(ws, alignmentCenter, border);
   mainHeader(ws, alignmentCenter);
 
-  excel.xlsx.writeFile("parsed-excel/test.xlsx");
+  const name = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
+  excel.xlsx.writeFile(`parsed-excel/${name}`);
 }
 
 function unmerge(ws: exceljs.Worksheet) {
@@ -161,7 +162,7 @@ function processConsumerCode({ ws, alignment, font, border }: Args) {
   column.width = 15;
 
   column.eachCell((cell) => {
-    const cellValue = String(cell.value).replaceAll(/[.,\s]/g, '');
+    const cellValue = String(cell.value).replaceAll(/[.,\s]/g, "");
     cell.numFmt = "@";
     cell.value = cellValue;
     cell.border = border;
