@@ -161,7 +161,7 @@ function processConsumerCode({ ws, alignment, font, border }: Args) {
   column.width = 15;
 
   column.eachCell((cell) => {
-    const cellValue = String(cell.value).trim();
+    const cellValue = String(cell.value).replaceAll(/[.,\s]/g, '');
     cell.numFmt = "@";
     cell.value = cellValue;
     cell.border = border;
