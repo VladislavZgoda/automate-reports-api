@@ -192,7 +192,11 @@ function processSerialNumbers({ ws, alignment, font, border }: Args) {
 function processAddress({ ws, alignment, font, border }: Args) {
   const column = ws.getColumn("I");
 
-  column.alignment = alignment;
+  column.alignment = {
+    ...alignment,
+    wrapText: true,
+  };
+
   column.font = font;
   column.width = 45;
 
@@ -216,7 +220,11 @@ function processDeviseType({ ws, alignment, font, border }: Args) {
 function processConsumer({ ws, alignment, font, border }: Args) {
   const column = ws.getColumn("J");
 
-  column.alignment = alignment;
+  column.alignment = {
+    ...alignment,
+    wrapText: true,
+  };
+
   column.font = font;
   column.width = 30;
 
