@@ -45,7 +45,7 @@ export default async function parseMatritca(
   ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
   // ExcelJS при изменении выравнивания в одном столбце, изменяет и другие.
-  // Единственный вариант это делать выравнивание везде.
+  // Единственный вариант это делать выравнивание везде одинаковое.
   const alignment: Alignment = {
     vertical: "middle",
     horizontal: "left",
