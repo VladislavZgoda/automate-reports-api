@@ -31,9 +31,11 @@ type Args = {
   border: Partial<Borders>;
 };
 
+type BalanceGroup = "private" | "legal";
+
 export default async function parseMatritca(
   fileName: string,
-  balanceGroup: "private" | "legal",
+  balanceGroup: BalanceGroup,
 ) {
   await folderExists("parsed-excel");
 
@@ -71,7 +73,7 @@ export default async function parseMatritca(
   // Вставить столбец после J для внесения даты АСКУЭ.
   ws.spliceColumns(11, 0, []);
 
-  deleteRows(ws);
+  deleteRows(ws, balanceGroup);
   addLineNumbers({ ws, alignment, font, border });
   processConsumerCode({ ws, alignment, font, border });
   processSerialNumbers({ ws, alignment, font, border });
@@ -95,19 +97,15 @@ function unmerge(ws: exceljs.Worksheet) {
   });
 }
 
-function deleteRows(ws: exceljs.Worksheet) {
-  let i = 3;
-
-  while (i < ws.actualRowCount + 1) {
-    if (checkValueForDelete(ws, i)) {
-      ws.spliceRows(i, 1);
-    } else {
-      i += 1;
-    }
+function deleteRows(ws: exceljs.Worksheet, balanceGroup: BalanceGroup) {
+  if (balanceGroup === "private") {
+    deletePrivate(ws);
+  } else if (balanceGroup === "legal") {
+    deleteLegal(ws);
   }
 }
 
-function checkValueForDelete(ws: exceljs.Worksheet, rowNumber: number) {
+function checkValueForDeletePrivate(ws: exceljs.Worksheet, rowNumber: number) {
   const consumerCode = ws.getCell("B" + rowNumber).value?.toString();
 
   if (consumerCode === undefined || !consumerCode.trim().startsWith("230700")) {
@@ -121,6 +119,38 @@ function checkValueForDelete(ws: exceljs.Worksheet, rowNumber: number) {
   }
 
   return false;
+}
+
+function deletePrivate(ws: exceljs.Worksheet) {
+  let i = 3;
+
+  while (i < ws.actualRowCount + 1) {
+    if (checkValueForDeletePrivate(ws, i)) {
+      ws.spliceRows(i, 1);
+    } else {
+      i += 1;
+    }
+  }
+}
+
+function deleteLegal(ws: exceljs.Worksheet) {
+  let i = 3;
+
+  while (i < ws.actualRowCount + 1) {
+    if (checkValueForDeleteLegal(ws, i)) {
+      ws.spliceRows(i, 1);
+    } else {
+      i += 1;
+    }
+  }
+}
+
+function checkValueForDeleteLegal(ws: exceljs.Worksheet, rowNumber: number) {
+  const consumerCode = ws.getCell("B" + rowNumber).value?.toString();
+
+  if (consumerCode === undefined || !consumerCode.trim().startsWith("230710")) {
+    return true;
+  }
 }
 
 function processConsumerCode({ ws, alignment, font, border }: Args) {
