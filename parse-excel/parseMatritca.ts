@@ -31,7 +31,10 @@ type Args = {
   border: Partial<Borders>;
 };
 
-export default async function parseMatritca(fileName: string) {
+export default async function parseMatritca(
+  fileName: string,
+  balanceGroup: "private" | "legal",
+) {
   await folderExists("parsed-excel");
 
   const excel = new exceljs.Workbook();

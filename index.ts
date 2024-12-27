@@ -29,7 +29,10 @@ fastify.post("/api/matritca/", async function handler(request, reply) {
     const fileName = `private_sector${randomUUID()}.xlsx`;
     await folderExists("./upload");
     await pipeline(data.file, createWriteStream(`./upload/${fileName}`));
-    await parseMatritca(fileName);
+
+    // @ts-expect-error некорректный тип, код рабочий
+    const balanceGroup = data?.fields.balanceGroup.value as "private" | "legal";
+    await parseMatritca(fileName, balanceGroup);
     reply.code(200).send();
   }
 });
