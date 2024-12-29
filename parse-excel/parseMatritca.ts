@@ -86,6 +86,7 @@ export default async function parseMatritca(
   processDeviseType({ ws, alignment, font, border });
   readingsMethod({ ws, alignment, font, border });
   addTP({ ws, alignment, font, border });
+  autoHeight(ws);
   tableHeaders(ws, alignmentCenter, border);
   mainHeader(ws, alignmentCenter);
 
@@ -430,4 +431,19 @@ function mainHeader(ws: exceljs.Worksheet, alignment: Alignment) {
   };
 
   cell.alignment = alignment;
+}
+
+// Юридические лица имеют порой длинные наименнования.
+// Эта функция настраивает высоту линий, не идеально, но сойдёт.
+function autoHeight(ws: exceljs.Worksheet) {
+  ws.eachRow((row) => {
+    let maxLine = 40;
+
+    row.eachCell((cell) => {
+      const cellLength = cell.value?.toString().length ?? 0;
+      maxLine = Math.max(cellLength - 55, maxLine);
+    });
+
+    row.height = maxLine;
+  });
 }
