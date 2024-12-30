@@ -44,11 +44,17 @@ export default async function parseMatritca(
   const ws = wb.worksheets[0];
   ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
-  // ExcelJS при изменении выравнивания в одном столбце, изменяет и другие.
-  // Единственный вариант это делать выравнивание везде одинаковое.
-  const alignment: Alignment = {
+  // ExcelJS при изменении выравнивания в столбцах B | C, изменяет и I | J и наоборот.
+  // Единственный вариант это cделать выравнивание одинаковое в этих стобцах.
+  // Скорее всего это баг, решения не нашёл.
+  const alignmentLeft: Alignment = {
     vertical: "middle",
     horizontal: "left",
+  };
+
+  const alignmentRight: Alignment = {
+    vertical: "middle",
+    horizontal: "right",
   };
 
   const alignmentCenter: Alignment = {
@@ -75,17 +81,17 @@ export default async function parseMatritca(
   ws.spliceColumns(11, 0, []);
 
   deleteRows(ws, balanceGroup);
-  addLineNumbers({ ws, alignment, font, border });
-  processConsumerCode({ ws, alignment, font, border });
-  processSerialNumbers({ ws, alignment, font, border });
-  processDate({ ws, alignment, font, border });
-  processActivePower({ ws, alignment, font, border });
-  processAddress({ ws, alignment, font, border });
-  processConsumer({ ws, alignment, font, border });
-  addAskueDate({ ws, alignment, font, border });
-  processDeviseType({ ws, alignment, font, border });
-  readingsMethod({ ws, alignment, font, border });
-  addTP({ ws, alignment, font, border });
+  addLineNumbers({ ws, alignment: alignmentCenter, font, border });
+  processConsumerCode({ ws, alignment: alignmentLeft, font, border });
+  processSerialNumbers({ ws, alignment: alignmentLeft, font, border });
+  processDate({ ws, alignment: alignmentCenter, font, border });
+  processActivePower({ ws, alignment: alignmentRight, font, border });
+  processAddress({ ws, alignment: alignmentLeft, font, border });
+  processConsumer({ ws, alignment: alignmentLeft, font, border });
+  addAskueDate({ ws, alignment: alignmentCenter, font, border });
+  processDeviseType({ ws, alignment: alignmentCenter, font, border });
+  readingsMethod({ ws, alignment: alignmentCenter, font, border });
+  addTP({ ws, alignment: alignmentCenter, font, border });
   autoHeight(ws);
   tableHeaders(ws, alignmentCenter, border);
   mainHeader(ws, alignmentCenter);
