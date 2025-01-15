@@ -1,9 +1,11 @@
 import express from "express";
 import multer from "multer";
+import cors from 'cors';
 import parseMatritca from "parse-excel/parseMatritca.js";
 
 const app = express();
 const port = 3000;
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
@@ -25,10 +27,10 @@ app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
 
   await parseMatritca(fileName, balanceGroup);
 
-  // res.setHeader("Content-Disposition", `attachment; filename=${downloadFileName}`);
+  // res.setHeader("Content-Disposition", `attachment;`);
   // res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-  res.download(folder + downloadFileName);
+  res.sendFile(folder + downloadFileName);
 });
 
 app.listen(port, () => {
