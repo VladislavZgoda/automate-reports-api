@@ -45,7 +45,7 @@ export default async function parseMatritca(
   ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
   // ExcelJS при изменении выравнивания в столбцах B | C, изменяет и I | J и наоборот.
-  // Единственный вариант это cделать выравнивание одинаковое в этих стобцах.
+  // Единственный вариант это сделать выравнивание одинаковое в этих столбцах.
   // Скорее всего это баг, решения не нашёл.
   const alignmentLeft: Alignment = {
     vertical: "middle",
@@ -439,7 +439,7 @@ function mainHeader(ws: exceljs.Worksheet, alignment: Alignment) {
   cell.alignment = alignment;
 }
 
-// Юридические лица имеют порой длинные наименнования.
+// Юридические лица имеют порой длинные наименования.
 // Эта функция настраивает высоту линий, не идеально, но сойдёт.
 function autoHeight(ws: exceljs.Worksheet) {
   ws.eachRow((row) => {
