@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import cors from 'cors';
+import exceljs from "exceljs";
 import parseMatritca from "parse-excel/parseMatritca.js";
 
 const app = express();
@@ -21,16 +22,27 @@ const upload = multer({ storage: storage });
 app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
   const fileName = req.file?.originalname;
   const balanceGroup = req.body.balanceGroup;
-  const folder = import.meta.dirname + '/parsed-excel/';
+  // const folder = import.meta.dirname + '/parsed-excel/';
+  // const downloadFileName = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
 
-  const downloadFileName = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
+  const excel = new exceljs.Workbook();
+  const wb = await excel.xlsx.readFile(`upload/${fileName}`);
 
-  await parseMatritca(fileName, balanceGroup);
+  await parseMatritca(wb, balanceGroup);
 
-  // res.setHeader("Content-Disposition", `attachment;`);
-  // res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
 
-  res.sendFile(folder + downloadFileName);
+  const encoded = encodeURI("Приложение №9 ЮР.xlsx");
+
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename*=UTF-8''${encoded}; filename="${encoded}"`
+  );
+  
+  wb.xlsx.write(res).then(() => res.status(200).end())
 });
 
 app.listen(port, () => {

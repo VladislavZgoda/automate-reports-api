@@ -34,13 +34,14 @@ type Args = {
 type BalanceGroup = "private" | "legal";
 
 export default async function parseMatritca(
-  fileName: string,
+  wb: exceljs.Workbook,
+  // fileName: string,
   balanceGroup: BalanceGroup,
 ) {
   await folderExists("parsed-excel");
 
-  const excel = new exceljs.Workbook();
-  const wb = await excel.xlsx.readFile(`upload/${fileName}`);
+  // const excel = new exceljs.Workbook();
+  // const wb = await excel.xlsx.readFile(`upload/${fileName}`);
   const ws = wb.worksheets[0];
   ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
@@ -96,8 +97,8 @@ export default async function parseMatritca(
   tableHeaders(ws, alignmentCenter, border);
   mainHeader(ws, alignmentCenter);
 
-  const name = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
-  excel.xlsx.writeFile(`parsed-excel/${name}`);
+  // const name = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
+  // excel.xlsx.writeFile(`parsed-excel/${name}`);
 }
 
 function unmerge(ws: exceljs.Worksheet) {
