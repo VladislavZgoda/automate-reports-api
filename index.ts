@@ -24,6 +24,7 @@ const upload = multer({ storage: storage });
 app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
   if (!req.file) {
     res.status(400).send("The form data is missing a xlsx file.");
+    return;
   } else if (
     req.file.mimetype !==
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -34,9 +35,11 @@ app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
       .send(
         "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
       );
+    return;
   } else if (!["private", "legal"].includes(req.body.balanceGroup)) {
     deleteFile(req.file.filename);
     res.status(400).send("The form data is missing a balance group.");
+    return;
   }
 
   const fileName = req.file?.filename as string;
