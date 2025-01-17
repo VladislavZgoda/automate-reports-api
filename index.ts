@@ -2,6 +2,8 @@ import express from "express";
 import multer from "multer";
 import cors from "cors";
 import exceljs from "exceljs";
+import { randomUUID } from "crypto";
+import { deleteFile } from "utils/fileSystemFunc.js";
 import parseMatritca from "parse-excel/parseMatritca.js";
 
 const app = express();
@@ -12,15 +14,15 @@ const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     cb(null, "./upload/");
   },
-  filename: function (_req, file, cb) {
-    cb(null, file.originalname);
+  filename: function (_req, _file, cb) {
+    cb(null, `matritca_export${randomUUID()}.xlsx`);
   },
 });
 
 const upload = multer({ storage: storage });
 
 app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
-  const fileName = req.file?.originalname;
+  const fileName = req.file?.filename;
   const balanceGroup = req.body.balanceGroup;
   const downloadFileName = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
 
@@ -39,7 +41,10 @@ app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
     `attachment; filename="${encodeURIComponent(downloadFileName)}"`,
   );
 
-  wb.xlsx.write(res).then(() => res.status(200).end());
+  wb.xlsx
+    .write(res)
+    .then(() => res.status(200).end())
+    .finally(() => deleteFile(fileName));
 });
 
 app.listen(port, () => {
