@@ -17,12 +17,10 @@
   "license": "MIT",
   "homepage": "https://github.com/VladislavZgoda/automate-reports-api#readme",
   "dependencies": {
-    "@fastify/multipart": "^9.0.1",
     "@types/express": "^5.0.0",
     "cors": "^2.8.5",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
-    "fastify": "^5.2.0",
     "multer": "^1.4.5-lts.1",
     "onchange": "^7.1.0"
   },
