@@ -12,7 +12,7 @@ app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "./upload/");
+    cb(null, "upload/");
   },
   filename: function (_req, _file, cb) {
     cb(null, `matritca_export${randomUUID()}.xlsx`);
@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/api/matritca/", upload.single("upload"), async (req, res) => {
+
   if (!req.file) {
     res.status(400).send("The form data is missing a xlsx file.");
     return;
