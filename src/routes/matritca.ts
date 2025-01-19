@@ -2,8 +2,8 @@ import express from "express";
 import multer from "multer";
 import exceljs from "exceljs";
 import { randomUUID } from "crypto";
-import { deleteFile } from "utils/fileSystemFunc.js";
-import parseMatritca from "parse-excel/parseMatritca.js";
+import { deleteFile } from "utils/fileSystemFunc.ts";
+import parseMatritca from "parse-excel/parseMatritca.ts";
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { matritcaRoute } from "./routes/matritca.js";
+import { matritcaRoute } from "./routes/matritca.ts";
 
 const app = express();
 const port = 3000;
