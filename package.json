@@ -17,7 +17,9 @@
   "license": "MIT",
   "homepage": "https://github.com/VladislavZgoda/automate-reports-api#readme",
   "dependencies": {
+    "@types/adm-zip": "^0.5.7",
     "@types/express": "^5.0.0",
+    "adm-zip": "^0.5.16",
     "cors": "^2.8.5",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",

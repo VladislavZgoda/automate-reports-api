@@ -7,9 +7,7 @@ export async function folderExists(folderName: string) {
   }
 }
 
-export function deleteFile(fileName: string) {
-  const filePath = `upload/${fileName}`;
-
+export function deleteFile(filePath: string) {
   unlink(filePath, (err) => {
     if (err) {
       console.error(`Error removing file: ${err}`);
