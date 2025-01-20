@@ -44,15 +44,19 @@ router.post(
 
     next();
   },
+  (req, _res, next) => {
+    if (req.body.balanceGroup === "legal") {
+      next();
+    } else if (req.body.balanceGroup === "private") {
+      next("route");
+    }
+  },
   async (req, res) => {
     const fileName = req.file?.filename as string;
-    const balanceGroup = req.body.balanceGroup;
-    const downloadFileName = `Приложение №9 ${balanceGroup === "private" ? "Быт" : "Юр"}.xlsx`;
-
     const excel = new exceljs.Workbook();
     const wb = await excel.xlsx.readFile(`upload/${fileName}`);
 
-    await parseMatritca(wb, balanceGroup);
+    await parseMatritca(wb, "legal");
 
     res.setHeader(
       "Content-Type",
@@ -61,7 +65,7 @@ router.post(
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${encodeURIComponent(downloadFileName)}"`,
+      `attachment; filename="${encodeURIComponent("Приложение №9 Юр.xlsx")}"`,
     );
 
     wb.xlsx
@@ -70,5 +74,28 @@ router.post(
       .finally(() => deleteFile(fileName));
   },
 );
+
+router.post("/matritca/", async (req, res) => {
+  const fileName = req.file?.filename as string;
+  const excel = new exceljs.Workbook();
+  const wb = await excel.xlsx.readFile(`upload/${fileName}`);
+
+  await parseMatritca(wb, "private");
+
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  );
+
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${encodeURIComponent("Приложение №9 Быт.xlsx")}"`,
+  );
+
+  wb.xlsx
+    .write(res)
+    .then(() => res.status(200).end())
+    .finally(() => deleteFile(fileName));
+});
 
 export { router as matritcaRoute };
