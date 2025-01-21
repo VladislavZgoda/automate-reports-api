@@ -5,6 +5,7 @@ import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
 import { deleteFile } from "utils/fileSystemFunc.ts";
 import parseMatritca from "parse-excel/parseMatritca.ts";
+import { todayDate } from "utils/dateFunc.ts";
 
 const router = express.Router();
 
@@ -54,7 +55,7 @@ router.post(
   },
   async (req, res) => {
     const fileName = req.file?.filename as string;
-    const uploadedFilePath = `upload/${fileName}`
+    const uploadedFilePath = `upload/${fileName}`;
     const excel = new exceljs.Workbook();
     const wb = await excel.xlsx.readFile(uploadedFilePath);
 
@@ -79,7 +80,7 @@ router.post(
 
 router.post("/matritca/", async (req, res) => {
   const fileName = req.file?.filename as string;
-  const uploadedFilePath = `upload/${fileName}`
+  const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
 
@@ -88,7 +89,11 @@ router.post("/matritca/", async (req, res) => {
   await wb.xlsx.writeFile(supplementNinePath);
 
   const zip = new AdmZip();
-  zip.addLocalFile(supplementNinePath);
+  zip.addLocalFile(
+    supplementNinePath,
+    undefined,
+    `Приложение № 9 Быт ${todayDate()}.xlsx`,
+  );
   const data = zip.toBuffer();
 
   res.setHeader("Content-Type", "application/octet-stream");
