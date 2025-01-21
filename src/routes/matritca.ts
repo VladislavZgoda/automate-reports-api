@@ -102,7 +102,7 @@ router.post("/matritca/", async (req, res) => {
     `attachment; filename=${encodeURIComponent("Быт.zip")}`,
   );
   res.setHeader("Content-Length", `${data.length}`);
-  res.send(data);
+  res.status(200).send(data);
 
   deleteFile(uploadedFilePath);
   deleteFile(supplementNinePath);
