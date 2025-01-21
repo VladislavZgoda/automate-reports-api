@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import { matritcaRoute } from "./routes/matritca.ts";
+import { folderExists } from "utils/fileSystemFunc.ts";
+
+await folderExists("upload");
+await folderExists("parsed-excel");
 
 const app = express();
 const port = 3000;

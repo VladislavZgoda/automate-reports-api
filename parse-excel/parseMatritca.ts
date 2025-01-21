@@ -1,6 +1,5 @@
 import exceljs from "exceljs";
 import type { Borders } from "exceljs";
-import { folderExists } from "utils/fileSystemFunc.js";
 
 type Alignment = {
   vertical?:
@@ -37,8 +36,6 @@ export default async function parseMatritca(
   wb: exceljs.Workbook,
   balanceGroup: BalanceGroup,
 ) {
-  await folderExists("parsed-excel");
-
   const ws = wb.worksheets[0];
   ws.name = `${balanceGroup === "private" ? "Быт" : "Юр"}`;
 
