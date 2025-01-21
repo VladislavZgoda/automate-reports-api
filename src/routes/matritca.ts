@@ -5,6 +5,7 @@ import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
 import { deleteFile } from "utils/fileSystemFunc.ts";
 import parseMatritca from "parse-excel/parseMatritca.ts";
+import createReadingSheet from "parse-excel/createReadingSheet.ts";
 import { todayDate } from "utils/dateFunc.ts";
 
 const router = express.Router();
@@ -87,25 +88,37 @@ router.post("/matritca/", async (req, res) => {
   await parseMatritca(wb, "private");
   const supplementNinePath = `parsed-excel/Приложение № 9 Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(supplementNinePath);
+  const readingSheetPath = await createReadingSheet(supplementNinePath);
 
   const zip = new AdmZip();
+
   zip.addLocalFile(
     supplementNinePath,
     undefined,
     `Приложение № 9 Быт ${todayDate()}.xlsx`,
   );
+
+  zip.addLocalFile(
+    readingSheetPath,
+    undefined,
+    `АСКУЭ Быт ${todayDate()}.xlsx`,
+  );
+  
   const data = zip.toBuffer();
 
   res.setHeader("Content-Type", "application/octet-stream");
+
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${encodeURIComponent("Быт.zip")}`,
   );
+
   res.setHeader("Content-Length", `${data.length}`);
   res.status(200).send(data);
 
   deleteFile(uploadedFilePath);
   deleteFile(supplementNinePath);
+  deleteFile(readingSheetPath);
 });
 
 export { router as matritcaRoute };
