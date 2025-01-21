@@ -103,7 +103,7 @@ router.post("/matritca/", async (req, res) => {
     undefined,
     `АСКУЭ Быт ${todayDate()}.xlsx`,
   );
-  
+
   const data = zip.toBuffer();
 
   res.setHeader("Content-Type", "application/octet-stream");

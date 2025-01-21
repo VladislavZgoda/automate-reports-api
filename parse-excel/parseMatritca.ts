@@ -1,24 +1,6 @@
 import exceljs from "exceljs";
 import type { Borders } from "exceljs";
-
-type Alignment = {
-  vertical?:
-    | "middle"
-    | "top"
-    | "bottom"
-    | "distributed"
-    | "justify"
-    | undefined;
-  horizontal?:
-    | "distributed"
-    | "justify"
-    | "left"
-    | "right"
-    | "center"
-    | "fill"
-    | "centerContinuous"
-    | undefined;
-};
+import type { Alignment } from "./types.ts";
 
 type Args = {
   ws: exceljs.Worksheet;
