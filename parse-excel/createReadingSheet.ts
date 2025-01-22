@@ -24,6 +24,7 @@ export default async function createReadingSheet(filePath: string) {
   ws.spliceColumns(11, 4);
 
   processKLColumns(ws, border, alignmentCenter);
+  tableHeaders(ws, border, alignmentCenter);
 
   const saveFilePath = `parsed-excel/АСКУЭ Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(saveFilePath);
@@ -49,4 +50,34 @@ function processKLColumns(
       size: 10,
     };
   }
+}
+
+function tableHeaders(
+  ws: exceljs.Worksheet,
+  border: Partial<exceljs.Borders>,
+  alignment: Alignment,
+) {
+  ws.mergeCells("A1:L1");
+
+  const cellK = ws.getCell("K2");
+  const cellL = ws.getCell("L2");
+
+  const font = {
+    name: "Times New Roman",
+    size: 12,
+    bold: true,
+  };
+
+  cellK.value = "Ведомость_КС";
+  cellK.border = border;
+  cellK.alignment = alignment;
+  cellK.font = font;
+
+  cellL.value = "Контролер";
+  cellL.border = border;
+  cellL.alignment = alignment;
+  cellL.font = font;
+
+  ws.getColumn("K").width = 18;
+  ws.getColumn("L").width = 15;
 }
