@@ -25,6 +25,7 @@ export default async function createReadingSheet(filePath: string) {
 
   processKLColumns(ws, border, alignmentCenter);
   tableHeaders(ws, border, alignmentCenter);
+  tableFooter(ws);
 
   const saveFilePath = `parsed-excel/АСКУЭ Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(saveFilePath);
@@ -80,4 +81,41 @@ function tableHeaders(
 
   ws.getColumn("K").width = 18;
   ws.getColumn("L").width = 15;
+}
+
+function tableFooter(ws: exceljs.Worksheet) {
+  const alignmentLeft: Alignment = {
+    vertical: "middle",
+    horizontal: "left",
+  };
+
+  const firstRow = ws.actualRowCount + 2;
+  ws.mergeCells(`A${firstRow}:C${firstRow}`);
+  ws.mergeCells(`F${firstRow}:H${firstRow}`);
+  const aCellFirstRow = ws.getCell(`A${firstRow}`);
+  aCellFirstRow.value = "начальник ОТЭЭ";
+  aCellFirstRow.alignment = alignmentLeft;
+  ws.getCell(`F${firstRow}`).value = "ФИО";
+
+  const secondRow = ws.actualRowCount + 2;
+  ws.mergeCells(`A${secondRow}:D${secondRow}`);
+  const aCellSecondRow = ws.getCell(`A${secondRow}`);
+  aCellSecondRow.value = 'филиала АО "Электросети-Кубани';
+  aCellSecondRow.alignment = alignmentLeft;
+
+  const thirdRow = ws.actualRowCount + 2;
+  ws.mergeCells(`A${thirdRow}:D${thirdRow}`);
+  ws.mergeCells(`G${thirdRow}:I${thirdRow}`);
+  const aCellThirdRow = ws.getCell(`A${thirdRow}`);
+  const gCellThirdRow = ws.getCell(`G${thirdRow}`);
+  aCellThirdRow.value = "Тимашевскэлектросеть";
+  aCellThirdRow.alignment = alignmentLeft;
+  gCellThirdRow.value = "сдал__________________";
+  gCellThirdRow.alignment = alignmentLeft;
+
+  const fourthRow = ws.actualRowCount + 2;
+  ws.mergeCells(`G${fourthRow}:I${fourthRow}`);
+  const gCellFourthRow = ws.getCell(`G${fourthRow}`);
+  gCellFourthRow.value = "принял________________";
+  gCellFourthRow.alignment = alignmentLeft;
 }
