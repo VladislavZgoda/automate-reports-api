@@ -27,6 +27,8 @@ export default async function createReadingSheet(filePath: string) {
   tableHeaders(ws, border, alignmentCenter);
   tableFooter(ws);
 
+  ws.pageSetup.printArea = `A1:L${ws.actualRowCount + 1}`;
+
   const saveFilePath = `parsed-excel/АСКУЭ Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(saveFilePath);
 
