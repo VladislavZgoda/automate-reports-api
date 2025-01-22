@@ -49,6 +49,12 @@ router.post(
       return;
     }
 
+    if (req.body.controller === undefined) {
+      deleteFile(`upload/${req.file.filename}`);
+      res.status(400).send("The form data is missing a controller.");
+      return;
+    }
+
     next();
   },
   (req, _res, next) => {
