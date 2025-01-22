@@ -1,0 +1,24 @@
+diff --git a/node_modules/exceljs/lib/xlsx/xform/sheet/sheet-properties-xform.js b/node_modules/exceljs/lib/xlsx/xform/sheet/sheet-properties-xform.js
+index ba63eb5..6115a6c 100644
+--- a/node_modules/exceljs/lib/xlsx/xform/sheet/sheet-properties-xform.js
++++ b/node_modules/exceljs/lib/xlsx/xform/sheet/sheet-properties-xform.js
+@@ -9,8 +9,8 @@ class SheetPropertiesXform extends BaseXform {
+ 
+     this.map = {
+       tabColor: new ColorXform('tabColor'),
+-      pageSetUpPr: new PageSetupPropertiesXform(),
+       outlinePr: new OutlinePropertiesXform(),
++      pageSetUpPr: new PageSetupPropertiesXform(),
+     };
+   }
+ 
+@@ -25,8 +25,8 @@ class SheetPropertiesXform extends BaseXform {
+ 
+       let inner = false;
+       inner = this.map.tabColor.render(xmlStream, model.tabColor) || inner;
+-      inner = this.map.pageSetUpPr.render(xmlStream, model.pageSetup) || inner;
+       inner = this.map.outlinePr.render(xmlStream, model.outlineProperties) || inner;
++      inner = this.map.pageSetUpPr.render(xmlStream, model.pageSetup) || inner;
+ 
+       if (inner) {
+         xmlStream.closeNode();

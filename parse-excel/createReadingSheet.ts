@@ -26,8 +26,7 @@ export default async function createReadingSheet(filePath: string) {
   processKLColumns(ws, border, alignmentCenter);
   tableHeaders(ws, border, alignmentCenter);
   tableFooter(ws);
-
-  ws.pageSetup.printArea = `A1:L${ws.actualRowCount + 1}`;
+  adjustPageSetup(ws);
 
   const saveFilePath = `parsed-excel/АСКУЭ Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(saveFilePath);
@@ -120,4 +119,14 @@ function tableFooter(ws: exceljs.Worksheet) {
   const gCellFourthRow = ws.getCell(`G${fourthRow}`);
   gCellFourthRow.value = "принял________________";
   gCellFourthRow.alignment = alignmentLeft;
+}
+
+function adjustPageSetup(ws: exceljs.Worksheet) {
+  ws.pageSetup.printArea = `A1:L${ws.actualRowCount + 1}`;
+  ws.pageSetup.printTitlesRow = undefined;
+  ws.pageSetup.orientation = "landscape";
+  ws.headerFooter.oddFooter = undefined;
+  ws.pageSetup.fitToPage = true;
+  ws.pageSetup.fitToWidth = 1;
+  ws.pageSetup.fitToHeight = 0;
 }
