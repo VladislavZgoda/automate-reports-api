@@ -4,8 +4,8 @@ import exceljs from "exceljs";
 import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
 import { deleteFile } from "utils/fileSystemFunc.ts";
-import parseMatritca from "parse-excel/parseMatritca.ts";
-import createReadingSheet from "parse-excel/createReadingSheet.ts";
+import parseMatritca from "src/parse-excel/parseMatritca.ts";
+import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 import { todayDate } from "utils/dateFunc.ts";
 
 const router = express.Router();
