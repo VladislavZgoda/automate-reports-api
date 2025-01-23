@@ -3,7 +3,10 @@ import type { Borders } from "exceljs";
 import { randomUUID } from "crypto";
 import type { Alignment } from "./types.ts";
 
-export default async function createReadingSheet(filePath: string) {
+export default async function createReadingSheet(
+  filePath: string,
+  controller: string,
+) {
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(filePath);
   const ws = wb.worksheets[0];
@@ -23,7 +26,7 @@ export default async function createReadingSheet(filePath: string) {
   ws.unMergeCells("A1:N1");
   ws.spliceColumns(11, 4);
 
-  processKLColumns(ws, border, alignmentCenter);
+  processKLColumns(ws, border, alignmentCenter, controller);
   tableHeaders(ws, border, alignmentCenter);
   tableFooter(ws);
   adjustPageSetup(ws);
@@ -38,13 +41,14 @@ function processKLColumns(
   ws: exceljs.Worksheet,
   border: Partial<exceljs.Borders>,
   alignment: Alignment,
+  controller: string,
 ) {
   for (let i = 3; i < ws.actualRowCount + 1; i++) {
     const cellK = ws.getCell("K" + i);
     const cellL = ws.getCell("L" + i);
 
     cellK.border = border;
-    cellL.value = "Згода В.Г.";
+    cellL.value = controller;
     cellL.border = border;
     cellL.alignment = alignment;
     cellL.font = {

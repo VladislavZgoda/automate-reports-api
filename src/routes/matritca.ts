@@ -96,6 +96,7 @@ router.post(
 
 router.post("/matritca/", async (req, res) => {
   const fileName = req.file?.filename as string;
+  const controller = req.body.controller as string;
   const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
@@ -103,7 +104,11 @@ router.post("/matritca/", async (req, res) => {
   await parseMatritca(wb, "private");
   const supplementNinePath = `parsed-excel/Приложение № 9 Быт${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(supplementNinePath);
-  const readingSheetPath = await createReadingSheet(supplementNinePath);
+
+  const readingSheetPath = await createReadingSheet(
+    supplementNinePath,
+    controller,
+  );
 
   const zip = new AdmZip();
 
