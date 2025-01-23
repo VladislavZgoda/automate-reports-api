@@ -6,6 +6,7 @@ import { randomUUID } from "crypto";
 import { deleteFile } from "src/utils/fileSystemFunc.ts";
 import parseMatritca from "src/parse-excel/parseMatritca.ts";
 import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
+import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import { todayDate } from "src/utils/dateFunc.ts";
 
 const router = express.Router();
@@ -24,7 +25,7 @@ const upload = multer({ storage: storage });
 router.post(
   "/matritca/",
   upload.single("upload"),
-  (req, res, next) => {
+  async (req, res, next) => {
     if (!req.file) {
       res.status(400).send("The form data is missing a xlsx file.");
       return;
@@ -41,6 +42,16 @@ router.post(
         .status(415)
         .send(
           "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
+        );
+      return;
+    }
+
+    if (!(await validateMatritcaExport(`upload/${fileName}`))) {
+      deleteFile(`upload/${fileName}`);
+      res
+        .status(422)
+        .send(
+          "The xlsx table headers are not the same as the default export from Sims.",
         );
       return;
     }
