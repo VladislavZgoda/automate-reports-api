@@ -51,7 +51,10 @@ router.post(
       return;
     }
 
-    if (req.body.controller === undefined) {
+    if (
+      req.body.balanceGroup === "private" &&
+      req.body.controller === undefined
+    ) {
       deleteFile(`upload/${fileName}`);
       res.status(400).send("The form data is missing a controller.");
       return;
