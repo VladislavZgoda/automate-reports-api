@@ -31,13 +31,13 @@ router.post(
       return;
     }
 
-    const fileName = req.file.filename;
+    const filePath = `upload/${req.file.filename}`;
 
     if (
       req.file.mimetype !==
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) {
-      deleteFile(`upload/${fileName}`);
+      deleteFile(filePath);
       res
         .status(415)
         .send(
@@ -46,8 +46,8 @@ router.post(
       return;
     }
 
-    if (!(await validateMatritcaExport(`upload/${fileName}`))) {
-      deleteFile(`upload/${fileName}`);
+    if (!(await validateMatritcaExport(filePath))) {
+      deleteFile(filePath);
       res
         .status(422)
         .send(
@@ -57,7 +57,7 @@ router.post(
     }
 
     if (!["private", "legal"].includes(req.body.balanceGroup)) {
-      deleteFile(`upload/${fileName}`);
+      deleteFile(filePath);
       res.status(400).send("The form data is missing a balance group.");
       return;
     }
@@ -66,7 +66,7 @@ router.post(
       req.body.balanceGroup === "private" &&
       req.body.controller === undefined
     ) {
-      deleteFile(`upload/${fileName}`);
+      deleteFile(filePath);
       res.status(400).send("The form data is missing a controller.");
       return;
     }
