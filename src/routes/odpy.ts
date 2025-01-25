@@ -23,17 +23,21 @@ router.post(
   upload.fields([
     { name: "matritcaOdpy", maxCount: 1 },
     { name: "piramidaOdpy", maxCount: 1 },
-  ]), (req, res, next) => {
+  ]),
+  (req, res, next) => {
     const files = req.files as Files;
-    console.log(Object.keys(files).length);
+    const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
+    const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
 
-    if (Object.keys(files).length === 0) {
+    if (Object.keys(files).length < 2) {
+      deleteFile(matritcaOdpyPath);
+      deleteFile(piramidaOdpyPath);
       res.status(400).send("The form data is missing a xlsx files.");
       return;
     }
 
-    res.status(200).send()
-  }
+    res.status(200).send();
+  },
 );
 
 export { router as odpyRoute };
