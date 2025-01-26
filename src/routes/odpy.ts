@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import { randomUUID } from "crypto";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
+import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post(
     { name: "matritcaOdpy", maxCount: 1 },
     { name: "piramidaOdpy", maxCount: 1 },
   ]),
-  (req, res, next) => {
+  async (req, res, next) => {
     const files = req.files as Files;
     const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
@@ -49,6 +50,16 @@ router.post(
         .status(415)
         .send(
           "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
+        );
+      return;
+    }
+
+    if (!(await validateMatritcaExport(matritcaOdpyPath))) {
+      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      res
+        .status(422)
+        .send(
+          "The xlsx table headers are not the same as the default export from Sims.",
         );
       return;
     }
