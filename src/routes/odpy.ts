@@ -3,6 +3,7 @@ import multer from "multer";
 import { randomUUID } from "crypto";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
+import validatePiramidaOdpy from "src/parse-excel/validatePiramidaOdpy.ts";
 
 const router = express.Router();
 
@@ -60,6 +61,16 @@ router.post(
         .status(422)
         .send(
           "The xlsx table headers are not the same as the default export from Sims.",
+        );
+      return;
+    }
+
+    if (!(await validatePiramidaOdpy(piramidaOdpyPath))) {
+      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      res
+        .status(422)
+        .send(
+          "The xlsx table headers are not the same as the default export from Piramida.",
         );
       return;
     }
