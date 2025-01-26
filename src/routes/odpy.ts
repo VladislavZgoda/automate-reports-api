@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { randomUUID } from "crypto";
-import { deleteFile, deleteFiles } from "src/utils/fileSystemFunc.ts";
+import { deleteFiles } from "src/utils/fileSystemFunc.ts";
 
 const router = express.Router();
 
@@ -32,6 +32,24 @@ router.post(
     if (Object.keys(files).length < 2) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res.status(400).send("The form data is missing a xlsx files.");
+      return;
+    }
+
+    const mimetype =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    if (
+      !(
+        files.matritcaOdpy[0].mimetype === mimetype &&
+        files.piramidaOdpy[0].mimetype === mimetype
+      )
+    ) {
+      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      res
+        .status(415)
+        .send(
+          "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
+        );
       return;
     }
 
