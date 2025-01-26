@@ -3,7 +3,7 @@ import multer from "multer";
 import exceljs from "exceljs";
 import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
-import { deleteFile } from "src/utils/fileSystemFunc.ts";
+import { deleteFile, deleteFiles } from "src/utils/fileSystemFunc.ts";
 import parseMatritca from "src/parse-excel/parseMatritca.ts";
 import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
@@ -147,9 +147,7 @@ router.post("/matritca/", async (req, res) => {
   res.setHeader("Content-Length", `${data.length}`);
   res.status(200).send(data);
 
-  deleteFile(uploadedFilePath);
-  deleteFile(supplementNinePath);
-  deleteFile(readingSheetPath);
+  deleteFiles(uploadedFilePath, supplementNinePath, readingSheetPath);
 });
 
 export { router as matritcaRoute };
