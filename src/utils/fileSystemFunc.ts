@@ -17,3 +17,7 @@ export function deleteFile(filePath: string) {
     console.log(`File ${filePath} has been successfully removed.`);
   });
 }
+
+export function deleteFiles(...files: string[]) {
+  files.forEach((file) => deleteFile(file));
+}

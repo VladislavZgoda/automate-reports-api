@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { randomUUID } from "crypto";
-import { deleteFile } from "src/utils/fileSystemFunc.ts";
+import { deleteFile, deleteFiles } from "src/utils/fileSystemFunc.ts";
 
 const router = express.Router();
 
@@ -30,8 +30,7 @@ router.post(
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
 
     if (Object.keys(files).length < 2) {
-      deleteFile(matritcaOdpyPath);
-      deleteFile(piramidaOdpyPath);
+      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res.status(400).send("The form data is missing a xlsx files.");
       return;
     }
