@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import validatePiramidaOdpy from "src/parse-excel/validatePiramidaOdpy.ts";
+import fillOdpyTemplate from "src/parse-excel/fillOdpyTemplate.ts";
 
 const router = express.Router();
 
@@ -75,7 +76,14 @@ router.post(
       return;
     }
 
-    res.status(200).send();
+    next();
+  },
+  async (req, res) => {
+    const files = req.files as Files;
+    const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
+    const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
+
+    await fillOdpyTemplate(matritcaOdpyPath, piramidaOdpyPath);
   },
 );
 
