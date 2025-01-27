@@ -84,6 +84,9 @@ router.post(
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
 
     await fillOdpyTemplate(matritcaOdpyPath, piramidaOdpyPath);
+
+    res.status(200).send();
+    deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
   },
 );
 
