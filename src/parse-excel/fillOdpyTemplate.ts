@@ -34,7 +34,10 @@ export default async function fillOdpyTemplate(
   wsTemplate.removeConditionalFormatting("");
   fillTemplate(wsTemplate, meters);
 
-  await wbTemplate.xlsx.writeFile(`parsed-excel/test.xlsx`);
+  const savePath = `parsed-excel/test.xlsx`;
+  await wbTemplate.xlsx.writeFile(savePath);
+
+  return savePath;
 }
 
 function parsePiramidaOdpy(ws: exceljs.Worksheet, meters: Meters) {
@@ -101,11 +104,11 @@ function fillTemplate(ws: exceljs.Worksheet, meters: Meters) {
     const serialNumber = String(ws.getCell("C" + i).value).trim();
 
     if (Object.hasOwn(meters, serialNumber)) {
-      ws.getCell("D" + i).value = meters[serialNumber].date;
+      handleDate(ws, `D${i}`, meters[serialNumber].date);
       handleActivePower(ws, `E${i}`, meters[serialNumber].t1);
       handleActivePower(ws, `F${i}`, meters[serialNumber].t2);
       handleActivePower(ws, `H${i}`, meters[serialNumber].t);
-      ws.getCell("K" + i).value = askueDate;
+      handleDate(ws, `K${i}`, askueDate);
     }
   }
 }
@@ -114,4 +117,19 @@ function handleActivePower(ws: exceljs.Worksheet, cell: string, value: number) {
   const currentCell = ws.getCell(cell);
   currentCell.numFmt = "@";
   currentCell.value = value.toFixed(2);
+
+  currentCell.alignment = {
+    vertical: "middle",
+    horizontal: "right",
+  };
+}
+
+function handleDate(ws: exceljs.Worksheet, cell: string, value: string) {
+  const currentCell = ws.getCell(cell);
+  currentCell.value = value;
+
+  currentCell.alignment = {
+    vertical: "middle",
+    horizontal: "center",
+  };
 }
