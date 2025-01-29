@@ -28,6 +28,7 @@ export default async function fillOdpyTemplate(
 
   const meters: Meters = {};
   parsePiramidaOdpy(wsPiramida, meters);
+  parseMatritcaOdpy(wsMatritca, meters); 
 }
 
 function parsePiramidaOdpy(ws: exceljs.Worksheet, meters: Meters) {
@@ -59,6 +60,26 @@ function parsePiramidaOdpy(ws: exceljs.Worksheet, meters: Meters) {
         t2: String(ws.getCell("F" + i).value),
         t: String(ws.getCell("D" + i).value),
         date: String(ws.getCell("D4").value),
+      };
+    }
+  }
+}
+
+function parseMatritcaOdpy(ws: exceljs.Worksheet, meters: Meters) {
+  for (let i = 2; i < ws.actualRowCount + 1; i++) {
+    const meteringPointName = String(ws.getCell("J" + i).value)
+      .trim()
+      .toUpperCase();
+
+    if (meteringPointName === "ОДПУ") {
+      let serialNumber = String(ws.getCell("C" + i).value).trim();
+      if (serialNumber.length === 7) serialNumber = "0" + serialNumber;
+
+      meters[serialNumber] = {
+        t1: String(ws.getCell("E" + i).value),
+        t2: String(ws.getCell("F" + i).value),
+        t: String(ws.getCell("H" + i).value),
+        date: String(ws.getCell("D" + i).value),
       };
     }
   }
