@@ -34,10 +34,10 @@ export default async function fillOdpyTemplate(
   wsTemplate.removeConditionalFormatting("");
   fillTemplate(wsTemplate, meters);
 
-  const savePath = `parsed-excel/test.xlsx`;
-  await wbTemplate.xlsx.writeFile(savePath);
+  const saveFilePath = `parsed-excel/test.xlsx`;
+  await wbTemplate.xlsx.writeFile(saveFilePath);
 
-  return savePath;
+  return saveFilePath;
 }
 
 function parsePiramidaOdpy(ws: exceljs.Worksheet, meters: Meters) {

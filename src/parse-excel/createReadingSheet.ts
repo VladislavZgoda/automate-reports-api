@@ -129,7 +129,7 @@ function adjustPageSetup(ws: exceljs.Worksheet) {
   ws.pageSetup.printArea = `A1:L${ws.actualRowCount + 1}`;
   ws.pageSetup.printTitlesRow = undefined;
   ws.pageSetup.orientation = "landscape";
-  ws.headerFooter.oddFooter = undefined;
+  if (ws.headerFooter) ws.headerFooter.oddFooter = undefined;
   ws.pageSetup.fitToPage = true;
   ws.pageSetup.fitToWidth = 1;
   ws.pageSetup.fitToHeight = 0;

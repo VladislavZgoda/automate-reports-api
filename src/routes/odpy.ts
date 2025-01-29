@@ -1,10 +1,13 @@
 import express from "express";
 import multer from "multer";
 import { randomUUID } from "crypto";
+import AdmZip from "adm-zip";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
+import { todayDate } from "src/utils/dateFunc.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import validatePiramidaOdpy from "src/parse-excel/validatePiramidaOdpy.ts";
 import fillOdpyTemplate from "src/parse-excel/fillOdpyTemplate.ts";
+import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 
 const router = express.Router();
 
@@ -83,10 +86,44 @@ router.post(
     const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
 
-    await fillOdpyTemplate(matritcaOdpyPath, piramidaOdpyPath);
+    const supplementNinePath = await fillOdpyTemplate(
+      matritcaOdpyPath,
+      piramidaOdpyPath,
+    );
 
-    res.status(200).send();
-    deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+    const readingSheetPath = await createReadingSheet(
+      supplementNinePath,
+      "test",
+    );
+
+    const zip = new AdmZip();
+
+    zip.addLocalFile(supplementNinePath, undefined, `Приложение № 9 ОДПУ.xlsx`);
+
+    zip.addLocalFile(
+      readingSheetPath,
+      undefined,
+      `АСКУЭ ОДПУ ${todayDate()}.xlsx`,
+    );
+
+    const data = zip.toBuffer();
+
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${encodeURIComponent("ОДПУ.zip")}`,
+    );
+
+    res.setHeader("Content-Length", `${data.length}`);
+    res.status(200).send(data);
+
+    deleteFiles(
+      matritcaOdpyPath,
+      piramidaOdpyPath,
+      supplementNinePath,
+      readingSheetPath,
+    );
   },
 );
 
