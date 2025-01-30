@@ -113,7 +113,7 @@ router.post("/matritca/", async (req, res) => {
   const wb = await excel.xlsx.readFile(uploadedFilePath);
 
   await parseMatritca(wb, "private");
-  const supplementNinePath = `parsed-excel/Приложение № 9 Быт${randomUUID()}.xlsx`;
+  const supplementNinePath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(supplementNinePath);
 
   const readingSheetPath = await createReadingSheet(

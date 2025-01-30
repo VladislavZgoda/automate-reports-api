@@ -1,4 +1,5 @@
 import exceljs from "exceljs";
+import { randomUUID } from "crypto";
 import { todayDate } from "src/utils/dateFunc.ts";
 
 type Meters = {
@@ -34,7 +35,7 @@ export default async function fillOdpyTemplate(
   wsTemplate.removeConditionalFormatting("");
   fillTemplate(wsTemplate, meters);
 
-  const saveFilePath = `parsed-excel/test.xlsx`;
+  const saveFilePath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
   await wbTemplate.xlsx.writeFile(saveFilePath);
 
   return saveFilePath;

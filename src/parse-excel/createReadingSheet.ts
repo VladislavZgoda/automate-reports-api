@@ -31,7 +31,7 @@ export default async function createReadingSheet(
   tableFooter(ws);
   adjustPageSetup(ws);
 
-  const saveFilePath = `parsed-excel/АСКУЭ Быт${randomUUID()}.xlsx`;
+  const saveFilePath = `parsed-excel/reading_sheet${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(saveFilePath);
 
   return saveFilePath;
