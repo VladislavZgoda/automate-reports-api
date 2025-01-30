@@ -79,12 +79,19 @@ router.post(
       return;
     }
 
+    if (req.body.controller === undefined) {
+      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      res.status(400).send("The form data is missing a controller.");
+      return;
+    }
+
     next();
   },
   async (req, res) => {
     const files = req.files as Files;
     const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
+    const controller = req.body.controller as string;
 
     const supplementNinePath = await fillOdpyTemplate(
       matritcaOdpyPath,
@@ -93,7 +100,7 @@ router.post(
 
     const readingSheetPath = await createReadingSheet(
       supplementNinePath,
-      "test",
+      controller,
     );
 
     const zip = new AdmZip();
