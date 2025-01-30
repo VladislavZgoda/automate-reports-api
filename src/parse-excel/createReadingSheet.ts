@@ -98,9 +98,11 @@ function tableFooter(ws: exceljs.Worksheet) {
   ws.mergeCells(`A${firstRow}:C${firstRow}`);
   ws.mergeCells(`F${firstRow}:H${firstRow}`);
   const aCellFirstRow = ws.getCell(`A${firstRow}`);
+  const fCellFirstRow = ws.getCell(`F${firstRow}`);
   aCellFirstRow.value = "начальник ОТЭЭ";
   aCellFirstRow.alignment = alignmentLeft;
-  ws.getCell(`F${firstRow}`).value = "ФИО";
+  fCellFirstRow.value = "ФИО";
+  fCellFirstRow.alignment = alignmentLeft;
 
   const secondRow = ws.actualRowCount + 2;
   ws.mergeCells(`A${secondRow}:D${secondRow}`);
@@ -110,7 +112,7 @@ function tableFooter(ws: exceljs.Worksheet) {
 
   const thirdRow = ws.actualRowCount + 2;
   ws.mergeCells(`A${thirdRow}:D${thirdRow}`);
-  ws.mergeCells(`G${thirdRow}:I${thirdRow}`);
+  ws.mergeCells(`F${thirdRow}:H${thirdRow}`);
   const aCellThirdRow = ws.getCell(`A${thirdRow}`);
   const gCellThirdRow = ws.getCell(`G${thirdRow}`);
   aCellThirdRow.value = "Тимашевскэлектросеть";
@@ -119,7 +121,7 @@ function tableFooter(ws: exceljs.Worksheet) {
   gCellThirdRow.alignment = alignmentLeft;
 
   const fourthRow = ws.actualRowCount + 2;
-  ws.mergeCells(`G${fourthRow}:I${fourthRow}`);
+  ws.mergeCells(`F${fourthRow}:H${fourthRow}`);
   const gCellFourthRow = ws.getCell(`G${fourthRow}`);
   gCellFourthRow.value = "принял________________";
   gCellFourthRow.alignment = alignmentLeft;
