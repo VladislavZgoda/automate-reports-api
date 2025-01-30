@@ -4,7 +4,7 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "start": "npx tsx --watch ./src/index.ts",
+    "start": "npx tsx --env-file=.env --watch ./src/index.ts",
     "prettier": "npx prettier . --write",
     "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}",
     "lint": "npx eslint .",

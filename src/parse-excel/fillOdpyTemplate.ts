@@ -23,7 +23,7 @@ export default async function fillOdpyTemplate(
   const wsPiramida = wbPiramida.worksheets[0];
 
   const wbTemplate = await excel.xlsx.readFile(
-    "xlsx-templates/odpy_reading_sheet.xlsx",
+    `xlsx-templates/${process.env.ODPY_TEMPLATE}`,
   );
   const wsTemplate = wbTemplate.worksheets[0];
 
