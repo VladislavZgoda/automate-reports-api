@@ -4,9 +4,9 @@ export default async function validatePiramidaOdpy(filePath: string) {
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(filePath);
   const ws = wb.worksheets[0];
-  const headresTableRow = ws.getRow(5);
+  const headersTableRow = ws.getRow(5);
 
-  if (!(headresTableRow.actualCellCount === 19)) return false;
+  if (!(headersTableRow.actualCellCount === 19)) return false;
 
   const headers = [
     "Точка учета",
@@ -20,7 +20,7 @@ export default async function validatePiramidaOdpy(filePath: string) {
 
   let check = true;
 
-  headresTableRow.eachCell((cell) => {
+  headersTableRow.eachCell((cell) => {
     const cellValue = cell.value?.toString().trim() as string;
 
     if (!headers.includes(cellValue)) check = false;
