@@ -8,13 +8,11 @@ https://github.com/exceljs/exceljs/issues/1348
 
 
 Для работы сервера необходимо создать в корне проекта папку xlsx-templates.
-В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx", "Приложение №9 ВИП.xlsx".
+В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx".
 Затем создать в корне проекта файл ".env". В этом файле указать имя шаблона в переменными: 
 - ODPY_TEMPLATE
-- VIP_TEMPLATE
 Примеры:
 - ODPY_TEMPLATE = odpy_reading_sheet.xlsx
-- VIP_TEMPLATE = supplement_nine_vip.xlsx
 
 Порт по умолчанию 3000, для смены в env файле указать желаемый в переменной PORT.
 
