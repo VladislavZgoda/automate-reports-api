@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import { genSaltSync, hashSync } from "bcrypt-ts";
 import { DatabaseSync } from "node:sqlite";
 import { argv, exit } from "node:process";
 
@@ -16,8 +16,8 @@ if (!argv[3]) {
 }
 
 const saltRounds = 12;
-const salt = await bcrypt.genSalt(saltRounds);
-const hashedPassword = await bcrypt.hash(userPassword, salt);
+const salt = genSaltSync(saltRounds);
+const hashedPassword = hashSync(userPassword, salt);
 
 const database = new DatabaseSync("storage/db.sqlite3");
 
