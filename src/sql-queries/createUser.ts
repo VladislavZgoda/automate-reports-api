@@ -21,4 +21,10 @@ const hashedPassword = hashSync(userPassword, salt);
 
 const database = new DatabaseSync("storage/db.sqlite3");
 
+const insert = database.prepare(
+  "INSERT INTO users (name, password) VALUES (?, ?)",
+);
+
+insert.run(userName, hashedPassword);
+
 database.close();
