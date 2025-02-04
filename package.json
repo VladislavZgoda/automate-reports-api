@@ -10,7 +10,8 @@
     "lint": "npx eslint .",
     "postinstall": "patch-package",
     "db:createDb": "npx tsx ./src/sql-queries/createDb.ts",
-    "db:createUser": "npx tsx ./src/sql-queries/createUser.ts"
+    "db:createUser": "npx tsx ./src/sql-queries/createUser.ts",
+    "db:changeUserPassword": "npx tsx ./src/sql-queries/changeUserPassword.ts"
   },
   "repository": {
     "type": "git",
