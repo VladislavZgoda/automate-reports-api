@@ -7,9 +7,9 @@ const database = new DatabaseSync("storage/db.sqlite3");
 
 database.exec(`
   CREATE TABLE IF NOT EXISTS Users(
-    id INTEGER PRIMARY KEY,
-    name TEXT,
-    passwords TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    passwords TEXT NOT NULL
   )
 `);
 
