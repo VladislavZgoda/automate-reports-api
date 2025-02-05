@@ -3,9 +3,9 @@ import { folderExists } from "src/utils/fileSystemFunc.ts";
 
 await folderExists("storage");
 
-const database = new DatabaseSync("storage/db.sqlite3");
+const db = new DatabaseSync("storage/db.sqlite3");
 
-database.exec(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,
@@ -13,4 +13,6 @@ database.exec(`
   )
 `);
 
-database.close();
+console.info("The database has been created.");
+
+db.close();

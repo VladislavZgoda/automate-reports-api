@@ -19,12 +19,13 @@ const saltRounds = 12;
 const salt = genSaltSync(saltRounds);
 const hashedPassword = hashSync(userPassword, salt);
 
-const database = new DatabaseSync("storage/db.sqlite3");
+const db = new DatabaseSync("storage/db.sqlite3");
 
-const insert = database.prepare(
+const insert = db.prepare(
   "INSERT INTO users (name, password) VALUES (?, ?)",
 );
 
 insert.run(userName, hashedPassword);
+console.info(`User ${userName} created.`)
 
-database.close();
+db.close();
