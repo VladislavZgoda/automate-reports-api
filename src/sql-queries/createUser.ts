@@ -21,11 +21,9 @@ const hashedPassword = hashSync(userPassword, salt);
 
 const db = new DatabaseSync("storage/db.sqlite3");
 
-const insert = db.prepare(
-  "INSERT INTO users (name, password) VALUES (?, ?)",
-);
+const insert = db.prepare("INSERT INTO users (name, password) VALUES (?, ?)");
 
 insert.run(userName, hashedPassword);
-console.info(`User ${userName} created.`)
+console.info(`User ${userName} created.`);
 
 db.close();
