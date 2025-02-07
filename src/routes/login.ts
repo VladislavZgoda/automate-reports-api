@@ -11,12 +11,7 @@ router.post(
   "/login",
   upload.none(),
   (req, res, next) => {
-    if (!req.body) {
-      res.status(400).json("Login or password is missing.");
-      return;
-    }
-
-    if (!req.body.login || !req.body.password) {
+    if (!req.body?.login || !req.body?.password) {
       res.status(400).json("Login or password is missing.");
       return;
     }
