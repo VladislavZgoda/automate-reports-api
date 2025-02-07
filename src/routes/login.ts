@@ -24,12 +24,12 @@ router.post(
     const user = findUser(login);
 
     if (!user) {
-      res.status(400).json("Login or password incorrect.");
+      res.status(401).json("Login or password incorrect.");
       return;
     }
 
     if (!compareSync(password, user.password)) {
-      res.status(400).json("Login or password incorrect.");
+      res.status(401).json("Login or password incorrect.");
       return;
     }
 
