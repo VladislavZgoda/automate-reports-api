@@ -33,7 +33,20 @@ router.post(
       return;
     }
 
-    res.status(200).send();
+    const secret = process.env.SECRET_ACCESS_TOKEN;
+
+    if (!secret) {
+      res.status(500).json("Internal Server Error.");
+      return;
+    }
+
+    const token = jsonwebtoken.sign({ id: user.id }, secret, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({
+      token,
+    });
   },
 );
 
