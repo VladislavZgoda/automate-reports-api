@@ -13,6 +13,13 @@ db.exec(`
   )
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tokens(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token TEXT UNIQUE NOT NULL
+  )
+`);
+
 console.info("The database has been created.");
 
 db.close();
