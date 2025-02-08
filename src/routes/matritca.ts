@@ -8,8 +8,11 @@ import parseMatritca from "src/parse-excel/parseMatritca.ts";
 import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import { todayDate } from "src/utils/dateFunc.ts";
+import validateToken from "src/middleware/validateToken.ts";
 
 const router = express.Router();
+
+router.use(validateToken);
 
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {

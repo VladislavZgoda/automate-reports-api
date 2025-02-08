@@ -8,8 +8,11 @@ import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import validatePiramidaOdpy from "src/parse-excel/validatePiramidaOdpy.ts";
 import fillOdpyTemplate from "src/parse-excel/fillOdpyTemplate.ts";
 import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
+import validateToken from "src/middleware/validateToken.ts";
 
 const router = express.Router();
+
+router.use(validateToken);
 
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
