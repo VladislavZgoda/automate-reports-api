@@ -27,7 +27,7 @@ export default function validateToken(
       res.status(403).json("Token is not valid.");
       return;
     }
-  });
 
-  next();
+    next()
+  });
 }

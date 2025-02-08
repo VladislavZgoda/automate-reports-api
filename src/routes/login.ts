@@ -41,7 +41,7 @@ router.post(
     }
 
     const token = jsonwebtoken.sign({ id: user.id }, secretKey, {
-      expiresIn: "1h",
+      expiresIn: "20m",
     });
 
     res.status(200).json({
