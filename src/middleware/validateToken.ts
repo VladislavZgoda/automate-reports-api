@@ -28,6 +28,6 @@ export default function validateToken(
       return;
     }
 
-    next()
+    next();
   });
 }
