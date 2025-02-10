@@ -1,8 +1,12 @@
 import { compareSync } from "bcrypt-ts";
-import jsonwebtoken from "jsonwebtoken";
 import express from "express";
 import multer from "multer";
 import findUser from "src/sql-queries/findUser.ts";
+import { insertToken } from "src/sql-queries/handleTokens.ts";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "src/utils/generateTokens.ts";
 
 const router = express.Router();
 const upload = multer();
@@ -33,19 +37,24 @@ router.post(
       return;
     }
 
-    const secretKey = process.env.SECRET_ACCESS_TOKEN;
+    const secretAccessKey = process.env.SECRET_ACCESS_TOKEN;
+    const secretRefreshKey = process.env.SECRET_REFRESH_TOKEN;
 
-    if (!secretKey) {
+    if (!secretAccessKey || !secretRefreshKey) {
       res.status(500).json("Internal Server Error.");
       return;
     }
 
-    const token = jsonwebtoken.sign({ id: user.id }, secretKey, {
-      expiresIn: "20m",
-    });
+    const payload = { id: user.id };
+
+    const accessToken = generateAccessToken(payload, secretAccessKey, "20m");
+    const refreshToken = generateRefreshToken(payload, secretRefreshKey);
+
+    insertToken(refreshToken);
 
     res.status(200).json({
-      token,
+      accessToken,
+      refreshToken,
     });
   },
 );
