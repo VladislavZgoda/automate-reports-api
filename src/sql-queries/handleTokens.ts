@@ -9,3 +9,30 @@ export function insertToken(token: string) {
 
   db.close();
 }
+
+type Token =
+  | {
+      id: number;
+      token: string;
+    }
+  | undefined;
+
+export function findToken(token: string) {
+  const db = new DatabaseSync("storage/db.sqlite3");
+
+  const selectToken = db.prepare("SELECT * FROM tokens WHERE token=?");
+  const dbToken = selectToken.get(token) as Token;
+
+  db.close();
+
+  return dbToken;
+}
+
+export function deleteToken(id: number) {
+  const db = new DatabaseSync("storage/db.sqlite3");
+
+  const detete = db.prepare("DELETE FROM tokens WHERE id=?");
+  detete.run(id);
+
+  db.close();
+}
