@@ -31,8 +31,8 @@ export function findToken(token: string) {
 export function deleteToken(id: number) {
   const db = new DatabaseSync("storage/db.sqlite3");
 
-  const detete = db.prepare("DELETE FROM tokens WHERE id=?");
-  detete.run(id);
+  const deleteToken = db.prepare("DELETE FROM tokens WHERE id=?");
+  deleteToken.run(id);
 
   db.close();
 }
