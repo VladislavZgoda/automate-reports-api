@@ -40,7 +40,7 @@ router.post(
 
     if (Object.keys(files).length < 2) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
-      res.status(400).send("The form data is missing a xlsx files.");
+      res.status(400).json("The form data is missing a xlsx files.");
       return;
     }
 
@@ -56,7 +56,7 @@ router.post(
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res
         .status(415)
-        .send(
+        .json(
           "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
         );
       return;
@@ -66,7 +66,7 @@ router.post(
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res
         .status(422)
-        .send(
+        .json(
           "The xlsx table headers are not the same as the default export from Sims.",
         );
       return;
@@ -76,7 +76,7 @@ router.post(
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res
         .status(422)
-        .send(
+        .json(
           "The xlsx table headers are not the same as the default export from Piramida.",
         );
       return;
@@ -84,7 +84,7 @@ router.post(
 
     if (req.body.controller === undefined) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
-      res.status(400).send("The form data is missing a controller.");
+      res.status(400).json("The form data is missing a controller.");
       return;
     }
 

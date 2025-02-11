@@ -30,7 +30,7 @@ router.post(
   upload.single("upload"),
   async (req, res, next) => {
     if (!req.file) {
-      res.status(400).send("The form data is missing a xlsx file.");
+      res.status(400).json("The form data is missing a xlsx file.");
       return;
     }
 
@@ -43,7 +43,7 @@ router.post(
       deleteFile(filePath);
       res
         .status(415)
-        .send(
+        .json(
           "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
         );
       return;
@@ -53,7 +53,7 @@ router.post(
       deleteFile(filePath);
       res
         .status(422)
-        .send(
+        .json(
           "The xlsx table headers are not the same as the default export from Sims.",
         );
       return;
@@ -61,7 +61,7 @@ router.post(
 
     if (!["private", "legal"].includes(req.body.balanceGroup)) {
       deleteFile(filePath);
-      res.status(400).send("The form data is missing a balance group.");
+      res.status(400).json("The form data is missing a balance group.");
       return;
     }
 
@@ -70,7 +70,7 @@ router.post(
       req.body.controller === undefined
     ) {
       deleteFile(filePath);
-      res.status(400).send("The form data is missing a controller.");
+      res.status(400).json("The form data is missing a controller.");
       return;
     }
 
