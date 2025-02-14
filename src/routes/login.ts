@@ -1,6 +1,6 @@
 import { compareSync } from "bcrypt-ts";
 import express from "express";
-import multer from "multer";
+import bodyParser from "body-parser";
 import findUser from "src/sql-queries/findUser.ts";
 import { insertToken } from "src/sql-queries/handleTokens.ts";
 import {
@@ -9,11 +9,10 @@ import {
 } from "src/utils/generateTokens.ts";
 
 const router = express.Router();
-const upload = multer();
 
 router.post(
   "/login",
-  upload.none(),
+  bodyParser.json(),
   (req, res, next) => {
     if (!req.body?.login || !req.body?.password) {
       res.status(400).json("Login or password is missing.");
