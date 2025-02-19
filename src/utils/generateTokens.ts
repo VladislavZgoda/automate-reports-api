@@ -1,7 +1,7 @@
 import jsonwebtoken from "jsonwebtoken";
 import type { StringValue } from "ms";
 
-export function generateAccessToken(
+export function generateToken(
   payload: string | Buffer | object,
   secretKey: string,
   expiration: number | StringValue | undefined,
@@ -11,13 +11,4 @@ export function generateAccessToken(
   });
 
   return accessToken;
-}
-
-export function generateRefreshToken(
-  payload: string | Buffer | object,
-  secretKey: string,
-) {
-  const refreshToken = jsonwebtoken.sign({ payload }, secretKey);
-
-  return refreshToken;
 }

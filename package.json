@@ -28,6 +28,7 @@
     "adm-zip": "^0.5.16",
     "bcrypt-ts": "^5.0.3",
     "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@tsconfig/node22": "^22.0.0",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",

@@ -3,10 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import findUser from "src/sql-queries/findUser.ts";
 import { insertToken } from "src/sql-queries/handleTokens.ts";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "src/utils/generateTokens.ts";
+import { generateToken } from "src/utils/generateTokens.ts";
 
 const router = express.Router();
 
@@ -44,16 +41,22 @@ router.post(
       return;
     }
 
-    const payload = { id: user.id };
+    const payload = { id: user.id, userName: user.name };
 
-    const accessToken = generateAccessToken(payload, secretAccessKey, "20m");
-    const refreshToken = generateRefreshToken(payload, secretRefreshKey);
+    const accessToken = generateToken(payload, secretAccessKey, "15m");
+    const refreshToken = generateToken(payload, secretRefreshKey, "24h");
+    console.log(refreshToken)
 
     insertToken(refreshToken);
 
+    res.cookie("token", refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      signed: true,
+    });
+
     res.status(200).json({
       accessToken,
-      refreshToken,
     });
   },
 );
