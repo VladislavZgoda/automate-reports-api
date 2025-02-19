@@ -23,7 +23,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use("/api", loginRoute);
-// app.use("/api", refreshRoute);
+app.use("/api", refreshRoute);
 app.use("/api", logoutRoute);
 
 app.use("/api", matritcaRoute);

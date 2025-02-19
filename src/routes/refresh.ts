@@ -1,20 +1,12 @@
 import express from "express";
-import multer from "multer";
 import jsonwebtoken from "jsonwebtoken";
-import {
-  findToken,
-  deleteToken,
-  insertToken,
-} from "src/sql-queries/handleTokens.ts";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "src/utils/generateTokens.ts";
+import bodyParser from "body-parser";
+import { findToken } from "src/sql-queries/handleTokens.ts";
+import { generateToken } from "src/utils/generateTokens.ts";
 
 const router = express.Router();
-const upload = multer();
 
-router.post("/refresh", upload.none(), (req, res) => {
+router.post("/refresh", bodyParser.json(), (req, res) => {
   const refreshToken = req.body.token as string | undefined;
 
   if (!refreshToken) {
@@ -40,19 +32,16 @@ router.post("/refresh", upload.none(), (req, res) => {
   jsonwebtoken.verify(refreshToken, secretRefreshKey, (err, payload) => {
     if (err) console.log(err);
 
-    deleteToken(dbToken.id);
+    const data = payload as {
+      payload: { id: number; userName: string };
+      iat: number;
+    };
+    const userData = data.payload;
 
-    const data = payload as { payload: { id: number }; iat: number };
-    const id = data.payload.id;
-
-    const newAccessToken = generateAccessToken({ id }, secretAccessKey, "20m");
-    const newRefreshToken = generateRefreshToken({ id }, secretRefreshKey);
-
-    insertToken(newRefreshToken);
+    const newAccessToken = generateToken(userData, secretAccessKey, "20m");
 
     res.status(200).json({
       accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
     });
   });
 });

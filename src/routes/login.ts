@@ -45,7 +45,6 @@ router.post(
 
     const accessToken = generateToken(payload, secretAccessKey, "15m");
     const refreshToken = generateToken(payload, secretRefreshKey, "24h");
-    console.log(refreshToken)
 
     insertToken(refreshToken);
 
