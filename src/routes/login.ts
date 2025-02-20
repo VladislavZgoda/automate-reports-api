@@ -48,10 +48,12 @@ router.post(
 
     insertToken(refreshToken);
 
+    res.setHeader("access-control-allow-credentials", "true");
+
     res.cookie("token", refreshToken, {
       httpOnly: true,
-      sameSite: "none",
       signed: true,
+      maxAge: 3 * 86400,
     });
 
     res.status(200).json({

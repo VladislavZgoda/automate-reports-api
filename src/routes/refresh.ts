@@ -1,13 +1,12 @@
 import express from "express";
 import jsonwebtoken from "jsonwebtoken";
-import bodyParser from "body-parser";
 import { findToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
 
 const router = express.Router();
 
-router.post("/refresh", bodyParser.json(), (req, res) => {
-  const refreshToken = req.body.token as string | undefined;
+router.get("/refresh", (req, res) => {
+  const refreshToken = req.signedCookies.token as string | undefined;
 
   if (!refreshToken) {
     res.status(401).json("You are not authenticated.");
