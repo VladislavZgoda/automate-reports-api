@@ -48,8 +48,6 @@ router.post(
 
     insertToken(refreshToken);
 
-    res.setHeader("access-control-allow-credentials", "true");
-
     res.cookie("token", refreshToken, {
       httpOnly: true,
       signed: true,
