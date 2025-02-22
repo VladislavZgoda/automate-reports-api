@@ -52,6 +52,7 @@ router.post(
       httpOnly: true,
       signed: true,
       maxAge: 3 * 86400,
+      sameSite: 'strict'
     });
 
     res.status(200).json({
