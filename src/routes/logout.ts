@@ -1,36 +1,27 @@
 import express from "express";
-import multer from "multer";
 import validateToken from "src/middleware/validateToken.ts";
 import { deleteToken, findToken } from "src/sql-queries/handleTokens.ts";
 
 const router = express.Router();
-const upload = multer();
 
 router.use(validateToken);
 
-router.post("/logout", upload.none(), (req, res) => {
-  const bodyErrMessage = "To log out, you must send a refresh token.";
-
-  if (!req.body) {
-    res.status(400).json(bodyErrMessage);
-    return;
-  }
-
-  const token = req.body.token as string | undefined;
-
-  if (!token) {
-    res.status(400).json(bodyErrMessage);
-    return;
-  }
-
-  const refreshToken = findToken(token);
+router.post("/logout", (req, res) => {
+  const refreshToken = req.signedCookies.token as string | undefined;
 
   if (!refreshToken) {
-    res.status(403).json("Token does not exist.");
+    res.status(401).json("You are not authenticated.");
     return;
   }
 
-  deleteToken(refreshToken.id);
+  const dbToken = findToken(refreshToken);
+
+  if (!dbToken) {
+    res.status(403).json("Token is not valid.");
+    return;
+  }
+
+  deleteToken(dbToken.id);
 
   res.status(200).json("You have logged out successfully.");
 });
