@@ -16,7 +16,10 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS tokens(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT UNIQUE NOT NULL
+    token TEXT UNIQUE NOT NULL,
+    user_id INTEGER,
+    CONSTRAINT tokens_users_fk,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
   )
 `);
 
