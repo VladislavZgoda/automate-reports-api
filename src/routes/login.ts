@@ -2,7 +2,7 @@ import { compareSync } from "bcrypt-ts";
 import express from "express";
 import bodyParser from "body-parser";
 import findUser from "src/sql-queries/findUser.ts";
-import { insertToken } from "src/sql-queries/handleTokens.ts";
+import { insertToken, deleteToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
 
 const router = express.Router();
@@ -46,7 +46,8 @@ router.post(
     const accessToken = generateToken(payload, secretAccessKey, "15m");
     const refreshToken = generateToken(payload, secretRefreshKey, "24h");
 
-    insertToken(refreshToken);
+    deleteToken(user.id);
+    insertToken(refreshToken, user.id);
 
     res.cookie("token", refreshToken, {
       httpOnly: true,

@@ -1,11 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 
-export function insertToken(token: string) {
+export function insertToken(token: string, userId: number) {
   const db = new DatabaseSync("storage/db.sqlite3");
 
-  const insertToken = db.prepare("INSERT INTO tokens (token) VALUES (?)");
+  const insertToken = db.prepare(
+    "INSERT INTO tokens (token, user_id) VALUES (?,?)",
+  );
 
-  insertToken.run(token);
+  insertToken.run(token, userId);
 
   db.close();
 }
@@ -28,11 +30,11 @@ export function findToken(token: string) {
   return dbToken;
 }
 
-export function deleteToken(id: number) {
+export function deleteToken(userId: number) {
   const db = new DatabaseSync("storage/db.sqlite3");
 
-  const deleteToken = db.prepare("DELETE FROM tokens WHERE id=?");
-  deleteToken.run(id);
+  const deleteToken = db.prepare("DELETE FROM tokens WHERE user_id=?");
+  deleteToken.run(userId);
 
   db.close();
 }

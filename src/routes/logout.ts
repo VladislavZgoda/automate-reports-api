@@ -1,6 +1,14 @@
 import express from "express";
+import jsonwebtoken from "jsonwebtoken";
 import validateToken from "src/middleware/validateToken.ts";
 import { deleteToken, findToken } from "src/sql-queries/handleTokens.ts";
+
+type Payload = {
+  payload: {
+    id: number;
+    userName: string;
+  };
+};
 
 const router = express.Router();
 
@@ -21,7 +29,10 @@ router.post("/logout", (req, res) => {
     return;
   }
 
-  deleteToken(dbToken.id);
+  const decodedToken = jsonwebtoken.decode(dbToken.token);
+  const tokenPayload = decodedToken as Payload;
+
+  deleteToken(tokenPayload.payload.id);
 
   res.status(200).json("You have logged out successfully.");
 });
