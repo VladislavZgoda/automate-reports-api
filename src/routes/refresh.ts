@@ -29,7 +29,14 @@ router.get("/refresh", (req, res) => {
   }
 
   jsonwebtoken.verify(refreshToken, secretRefreshKey, (err, payload) => {
-    if (err) console.log(err);
+    if (err) {
+      console.log(err.name);
+
+      res.status(403).json("Token is not valid.");
+      return;
+    }
+
+    console.log('sdsdsdsd');
 
     const data = payload as {
       payload: { id: number; userName: string };
