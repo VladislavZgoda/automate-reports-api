@@ -64,21 +64,21 @@ router.post(
 
     if (!(await validateMatritcaExport(matritcaOdpyPath))) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
-      res
-        .status(422)
-        .json(
-          "The xlsx table headers are not the same as the default export from Sims.",
-        );
+      res.status(422).json({
+        file: "matritcaOdpy",
+        message:
+          "Заголовки таблицы xlsx не совпадают с заголовками экспорта по умолчанию из Sims.",
+      });
       return;
     }
 
     if (!(await validatePiramidaOdpy(piramidaOdpyPath))) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
-      res
-        .status(422)
-        .json(
-          "The xlsx table headers are not the same as the default export from Piramida.",
-        );
+      res.status(422).json({
+        file: "piramidaOdpy",
+        message:
+          "Заголовки таблицы xlsx не совпадают с заголовками отчёта по показаниям из Пирамида2 с диапазоном в 4 суток.",
+      });
       return;
     }
 
