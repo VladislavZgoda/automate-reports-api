@@ -2,14 +2,14 @@ import exceljs from "exceljs";
 import { randomUUID } from "crypto";
 import { todayDate } from "src/utils/dateFunc.ts";
 
-type Meters = {
-  [serialNumber: string]: {
-    t1: number;
-    t2: number;
-    t: number;
-    date: string;
-  };
-};
+type MeterSerialNumber = string;
+
+interface MetersData {
+  t1: number;
+  t2: number;
+  t: number;
+  date: string;
+}
 
 export default async function fillOdpyTemplate(
   matritcaPath: string,
@@ -26,9 +26,10 @@ export default async function fillOdpyTemplate(
   const wbTemplate = await excel.xlsx.readFile(
     `xlsx-templates/${process.env.ODPY_TEMPLATE}`,
   );
-  const wsTemplate = wbTemplate.worksheets[0];
 
-  const meters: Meters = {};
+  const wsTemplate = wbTemplate.worksheets[0];
+  const meters: Record<MeterSerialNumber, MetersData> = {};
+
   parsePiramidaOdpy(wsPiramida, meters);
   parseMatritcaOdpy(wsMatritca, meters);
 
@@ -41,48 +42,55 @@ export default async function fillOdpyTemplate(
   return saveFilePath;
 }
 
-function parsePiramidaOdpy(ws: exceljs.Worksheet, meters: Meters) {
+function parsePiramidaOdpy(
+  ws: exceljs.Worksheet,
+  meters: Record<MeterSerialNumber, MetersData>,
+) {
   for (let i = 6; i < ws.actualRowCount + 1; i++) {
     if (ws.getCell("P" + i).value) {
-      meters[String(ws.getCell("C" + i).value)] = {
+      meters[ws.getCell("C" + i).text] = {
         t1: Number(ws.getCell("Q" + i).value),
         t2: Number(ws.getCell("R" + i).value),
         t: Number(ws.getCell("P" + i).value),
-        date: String(ws.getCell("P4").value),
+        date: ws.getCell("P4").text,
       };
     } else if (ws.getCell("L" + i).value) {
-      meters[String(ws.getCell("C" + i).value)] = {
+      meters[ws.getCell("C" + i).text] = {
         t1: Number(ws.getCell("M" + i).value),
         t2: Number(ws.getCell("N" + i).value),
         t: Number(ws.getCell("L" + i).value),
-        date: String(ws.getCell("L4").value),
+        date: ws.getCell("L4").text,
       };
     } else if (ws.getCell("H" + i).value) {
-      meters[String(ws.getCell("C" + i).value)] = {
+      meters[ws.getCell("C" + i).text] = {
         t1: Number(ws.getCell("I" + i).value),
         t2: Number(ws.getCell("J" + i).value),
         t: Number(ws.getCell("H" + i).value),
-        date: String(ws.getCell("H4").value),
+        date: ws.getCell("H4").text,
       };
     } else if (ws.getCell("D" + i).value) {
-      meters[String(ws.getCell("C" + i).value)] = {
+      meters[ws.getCell("C" + i).text] = {
         t1: Number(ws.getCell("E" + i).value),
         t2: Number(ws.getCell("F" + i).value),
         t: Number(ws.getCell("D" + i).value),
-        date: String(ws.getCell("D4").value),
+        date: ws.getCell("D4").text,
       };
     }
   }
 }
 
-function parseMatritcaOdpy(ws: exceljs.Worksheet, meters: Meters) {
+function parseMatritcaOdpy(
+  ws: exceljs.Worksheet,
+  meters: Record<MeterSerialNumber, MetersData>,
+) {
   for (let i = 2; i < ws.actualRowCount + 1; i++) {
-    const meteringPointName = String(ws.getCell("J" + i).value)
-      .trim()
+    const meteringPointName = ws
+      .getCell("J" + i)
+      .text.trim()
       .toUpperCase();
 
     if (meteringPointName === "ОДПУ") {
-      let serialNumber = String(ws.getCell("C" + i).value).trim();
+      let serialNumber = ws.getCell("C" + i).text.trim();
       if (serialNumber.length === 7) serialNumber = "0" + serialNumber;
 
       const date = ws.getCell("D" + i).value as Date;
@@ -98,11 +106,14 @@ function parseMatritcaOdpy(ws: exceljs.Worksheet, meters: Meters) {
   }
 }
 
-function fillTemplate(ws: exceljs.Worksheet, meters: Meters) {
+function fillTemplate(
+  ws: exceljs.Worksheet,
+  meters: Record<MeterSerialNumber, MetersData>,
+) {
   const askueDate = todayDate();
 
   for (let i = 3; i < ws.actualRowCount + 1; i++) {
-    const serialNumber = String(ws.getCell("C" + i).value).trim();
+    const serialNumber = ws.getCell("C" + i).text.trim();
 
     if (Object.hasOwn(meters, serialNumber)) {
       handleDate(ws, `D${i}`, meters[serialNumber].date);
