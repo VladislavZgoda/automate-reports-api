@@ -9,6 +9,11 @@ import validatePiramidaOdpy from "src/parse-excel/validatePiramidaOdpy.ts";
 import fillOdpyTemplate from "src/parse-excel/fillOdpyTemplate.ts";
 import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 import validateToken from "src/middleware/validateToken.ts";
+import { z } from "zod";
+
+const controllerSchema = z.object({
+  controller: z.string().min(1),
+});
 
 const router = express.Router();
 
@@ -80,7 +85,9 @@ router.post(
       return;
     }
 
-    if (req.body.controller === undefined) {
+    const controller = controllerSchema.safeParse(req.body).success;
+
+    if (!controller) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res.status(400).json("The form data is missing a controller.");
       return;
@@ -89,10 +96,10 @@ router.post(
     next();
   },
   async (req, res) => {
-    const files = req.files as Files;
+    const files = req.files as Record<string, Express.Multer.File[]>;
     const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
-    const controller = req.body.controller as string;
+    const controller = controllerSchema.parse(req.body).controller;
 
     const supplementNinePath = await fillOdpyTemplate(
       matritcaOdpyPath,
