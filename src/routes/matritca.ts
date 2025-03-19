@@ -9,6 +9,33 @@ import createReadingSheet from "src/parse-excel/createReadingSheet.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import { todayDate } from "src/utils/dateFunc.ts";
 import validateToken from "src/middleware/validateToken.ts";
+import { z } from "zod";
+
+const bodyWithoutFileSchema = z
+  .object({
+    balanceGroup: z.enum(["private", "legal"], {
+      message: "The form data is missing a balance group.",
+    }),
+    controller: z.string().optional(),
+  })
+  .refine(
+    (data) =>
+      data.balanceGroup !== "private" ||
+      (data.balanceGroup === "private" && data.controller),
+    {
+      message: "The form data is missing a controller.",
+      path: ["controller"],
+    },
+  );
+
+declare module "express-serve-static-core" {
+  interface Request {
+    bodyWithoutFile: {
+      balanceGroup: "private" | "legal";
+      controller?: string;
+    };
+  }
+}
 
 const router = express.Router();
 
@@ -59,27 +86,28 @@ router.post(
       return;
     }
 
-    if (!["private", "legal"].includes(req.body.balanceGroup)) {
+    const bodyWithoutFile = bodyWithoutFileSchema.safeParse(req.body);
+
+    if (bodyWithoutFile.error?.issues[0].path[0] === "balanceGroup") {
       deleteFile(filePath);
       res.status(400).json("The form data is missing a balance group.");
       return;
     }
 
-    if (
-      req.body.balanceGroup === "private" &&
-      req.body.controller === undefined
-    ) {
+    if (bodyWithoutFile.error?.issues[0].path[0] === "controller") {
       deleteFile(filePath);
       res.status(400).json("The form data is missing a controller.");
       return;
     }
 
+    req.bodyWithoutFile = bodyWithoutFile.data!;
+
     next();
   },
   (req, _res, next) => {
-    if (req.body.balanceGroup === "legal") {
+    if (req.bodyWithoutFile?.balanceGroup === "legal") {
       next();
-    } else if (req.body.balanceGroup === "private") {
+    } else if (req.bodyWithoutFile?.balanceGroup === "private") {
       next("route");
     }
   },
@@ -110,7 +138,7 @@ router.post(
 
 router.post("/matritca/", async (req, res) => {
   const fileName = req.file!.filename;
-  const controller = req.body.controller as string;
+  const controller = req.bodyWithoutFile.controller!;
   const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
