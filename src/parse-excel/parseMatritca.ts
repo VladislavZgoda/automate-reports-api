@@ -2,7 +2,7 @@ import exceljs from "exceljs";
 import type { Borders } from "exceljs";
 import type { Alignment } from "./types.ts";
 
-type Args = {
+interface Args {
   ws: exceljs.Worksheet;
   alignment: Alignment;
   font: {
@@ -10,11 +10,11 @@ type Args = {
     size: number;
   };
   border: Partial<Borders>;
-};
+}
 
 type BalanceGroup = "private" | "legal";
 
-export default async function parseMatritca(
+export default function parseMatritca(
   wb: exceljs.Workbook,
   balanceGroup: BalanceGroup,
 ) {
@@ -50,6 +50,10 @@ export default async function parseMatritca(
     bottom: { style: "thin" },
     right: { style: "thin" },
   };
+
+  // Первая линия объединена по умолчанию при экспорте из Sims Client.
+  // Это объединение мешает при вызове некоторых API ExcelJS.
+  ws.unMergeCells("A1:K1");
 
   // Столбец K и L обеденны (зачем не понятно) при экспорте из Sims Client.
   unmerge(ws);
@@ -89,15 +93,15 @@ function deleteRows(ws: exceljs.Worksheet, balanceGroup: BalanceGroup) {
 }
 
 function checkValueForDeletePrivate(ws: exceljs.Worksheet, rowNumber: number) {
-  const consumerCode = ws.getCell("B" + rowNumber).value?.toString();
+  const consumerCode = ws.getCell("B" + rowNumber).text;
 
-  if (consumerCode === undefined || !consumerCode.trim().startsWith("230700")) {
+  if (!consumerCode.trim().startsWith("230700")) {
     return true;
   }
 
-  const consumer = ws.getCell("J" + rowNumber).value?.toString();
+  const consumer = ws.getCell("J" + rowNumber).text;
 
-  if (consumer?.trim().toLowerCase() === "одпу") {
+  if (consumer.trim().toLowerCase() === "одпу") {
     return true;
   }
 
@@ -129,9 +133,9 @@ function deleteLegal(ws: exceljs.Worksheet) {
 }
 
 function checkValueForDeleteLegal(ws: exceljs.Worksheet, rowNumber: number) {
-  const consumerCode = ws.getCell("B" + rowNumber).value?.toString();
+  const consumerCode = ws.getCell("B" + rowNumber).text;
 
-  if (consumerCode === undefined || !consumerCode.trim().startsWith("230710")) {
+  if (!consumerCode.trim().startsWith("230710")) {
     return true;
   }
 }
@@ -144,7 +148,7 @@ function processConsumerCode({ ws, alignment, font, border }: Args) {
   column.width = 15;
 
   column.eachCell((cell) => {
-    const cellValue = String(cell.value).replaceAll(/[.,\s]/g, "");
+    const cellValue = cell.text.replaceAll(/[.,\s]/g, "");
     cell.numFmt = "@";
     cell.value = cellValue;
     cell.border = border;
@@ -159,7 +163,7 @@ function processSerialNumbers({ ws, alignment, font, border }: Args) {
   column.width = 15;
 
   column.eachCell((cell) => {
-    const cellValue = String(cell.value).trim();
+    const cellValue = cell.text.trim();
     cell.numFmt = "@";
 
     if (cellValue.length === 7) {
@@ -340,10 +344,7 @@ function addTP({ ws, alignment, font, border }: Args) {
   const re = /^ТП-\d{1,3}П?/i;
 
   for (let i = 3; i < ws.actualRowCount + 1; i++) {
-    const tp = ws
-      .getCell("I" + i)
-      .value?.toString()
-      .match(re);
+    const tp = re.exec(ws.getCell("I" + i).text);
 
     const cell = ws.getCell("N" + i);
     cell.value = tp?.[0];
@@ -397,7 +398,6 @@ function tableHeaders(
 }
 
 function mainHeader(ws: exceljs.Worksheet, alignment: Alignment) {
-  ws.unMergeCells("A1:K1");
   ws.mergeCells("A1:N1");
 
   const cell = ws.getCell("A1");
@@ -420,7 +420,7 @@ function autoHeight(ws: exceljs.Worksheet) {
     let maxLine = 40;
 
     row.eachCell((cell) => {
-      const cellLength = cell.value?.toString().length ?? 0;
+      const cellLength = cell.text.length;
       maxLine = Math.max(cellLength - 55, maxLine);
     });
 
