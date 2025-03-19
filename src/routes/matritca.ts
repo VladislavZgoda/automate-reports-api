@@ -84,7 +84,7 @@ router.post(
     }
   },
   async (req, res) => {
-    const fileName = req.file?.filename as string;
+    const fileName = req.file!.filename;
     const uploadedFilePath = `upload/${fileName}`;
     const excel = new exceljs.Workbook();
     const wb = await excel.xlsx.readFile(uploadedFilePath);
@@ -101,7 +101,7 @@ router.post(
       `attachment; filename="${encodeURIComponent("Приложение №9 Юр.xlsx")}"`,
     );
 
-    return wb.xlsx
+    void wb.xlsx
       .write(res)
       .then(() => res.status(200).end())
       .finally(() => deleteFile(uploadedFilePath));
@@ -109,7 +109,7 @@ router.post(
 );
 
 router.post("/matritca/", async (req, res) => {
-  const fileName = req.file?.filename as string;
+  const fileName = req.file!.filename;
   const controller = req.body.controller as string;
   const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
