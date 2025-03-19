@@ -10,7 +10,8 @@ export async function folderExists(folderName: string) {
 export function deleteFile(filePath: string) {
   unlink(filePath, (err) => {
     if (err) {
-      console.error(`Error removing file: ${err}`);
+      console.error(`Error removing file: ${err.message}`);
+      console.error(err);
       return;
     }
 
