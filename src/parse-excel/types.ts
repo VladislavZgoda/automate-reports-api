@@ -1,4 +1,4 @@
-export type Alignment = {
+export interface Alignment {
   vertical?:
     | "middle"
     | "top"

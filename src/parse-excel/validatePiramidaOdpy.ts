@@ -21,7 +21,7 @@ export default async function validatePiramidaOdpy(filePath: string) {
   let check = true;
 
   headersTableRow.eachCell((cell) => {
-    const cellValue = cell.value?.toString().trim() as string;
+    const cellValue = cell.text.trim();
 
     if (!headers.includes(cellValue)) check = false;
   });
