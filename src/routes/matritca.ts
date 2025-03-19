@@ -89,7 +89,7 @@ router.post(
     const excel = new exceljs.Workbook();
     const wb = await excel.xlsx.readFile(uploadedFilePath);
 
-    await parseMatritca(wb, "legal");
+    parseMatritca(wb, "legal");
 
     res.setHeader(
       "Content-Type",
@@ -101,7 +101,7 @@ router.post(
       `attachment; filename="${encodeURIComponent("Приложение №9 Юр.xlsx")}"`,
     );
 
-    wb.xlsx
+    return wb.xlsx
       .write(res)
       .then(() => res.status(200).end())
       .finally(() => deleteFile(uploadedFilePath));
@@ -115,7 +115,8 @@ router.post("/matritca/", async (req, res) => {
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
 
-  await parseMatritca(wb, "private");
+  parseMatritca(wb, "private");
+
   const supplementNinePath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
   await wb.xlsx.writeFile(supplementNinePath);
 

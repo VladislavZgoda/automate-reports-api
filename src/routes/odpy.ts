@@ -25,8 +25,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-type Files = { [fieldname: string]: Express.Multer.File[] };
-
 router.post(
   "/odpy/",
   upload.fields([
@@ -34,7 +32,7 @@ router.post(
     { name: "piramidaOdpy", maxCount: 1 },
   ]),
   async (req, res, next) => {
-    const files = req.files as Files;
+    const files = req.files as Record<string, Express.Multer.File[]>;
     const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
     const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
 

@@ -3,12 +3,12 @@ import jsonwebtoken from "jsonwebtoken";
 import validateToken from "src/middleware/validateToken.ts";
 import { deleteToken, findToken } from "src/sql-queries/handleTokens.ts";
 
-type Payload = {
+interface Payload {
   payload: {
     id: number;
     userName: string;
   };
-};
+}
 
 const router = express.Router();
 

@@ -15,4 +15,4 @@ export interface Alignment {
     | "fill"
     | "centerContinuous"
     | undefined;
-};
+}
