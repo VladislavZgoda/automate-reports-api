@@ -1,4 +1,5 @@
 import express from "express";
+import type { Request } from "express";
 import multer from "multer";
 import exceljs from "exceljs";
 import AdmZip from "adm-zip";
@@ -28,12 +29,10 @@ const bodyWithoutFileSchema = z
     },
   );
 
-declare module "express-serve-static-core" {
-  interface Request {
-    balanceGroup: "private" | "legal";
-    controller: string;
-  }
-}
+type CustomRequest = Request & {
+  balanceGroup?: "private" | "legal";
+  controller?: string;
+};
 
 const router = express.Router();
 
@@ -53,7 +52,7 @@ const upload = multer({ storage: storage });
 router.post(
   "/matritca/",
   upload.single("upload"),
-  async (req, res, next) => {
+  async (req: CustomRequest, res, next) => {
     if (!req.file) {
       res.status(400).json("The form data is missing a xlsx file.");
       return;
@@ -110,7 +109,7 @@ router.post(
       next();
     }
   },
-  (req, _res, next) => {
+  (req: CustomRequest, _res, next) => {
     if (req.balanceGroup === "legal") {
       next();
     } else if (req.balanceGroup === "private") {
@@ -142,9 +141,9 @@ router.post(
   },
 );
 
-router.post("/matritca/", async (req, res) => {
+router.post("/matritca/", async (req: CustomRequest, res) => {
   const fileName = req.file?.filename;
-  const controller = req.controller;
+  const controller = req.controller!;
   const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
