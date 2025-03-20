@@ -88,26 +88,28 @@ router.post(
 
     const bodyWithoutFile = bodyWithoutFileSchema.safeParse(req.body);
 
-    if (bodyWithoutFile.error?.issues[0].path[0] === "balanceGroup") {
-      deleteFile(filePath);
-      res.status(400).json("The form data is missing a balance group.");
-      return;
+    if (!bodyWithoutFile.success) {
+      if (bodyWithoutFile.error?.issues[0].path[0] === "balanceGroup") {
+        deleteFile(filePath);
+        res.status(400).json("The form data is missing a balance group.");
+        return;
+      }
+
+      if (bodyWithoutFile.error?.issues[0].path[0] === "controller") {
+        deleteFile(filePath);
+        res.status(400).json("The form data is missing a controller.");
+        return;
+      }
+    } else {
+      req.bodyWithoutFile = bodyWithoutFile.data;
+
+      next();
     }
-
-    if (bodyWithoutFile.error?.issues[0].path[0] === "controller") {
-      deleteFile(filePath);
-      res.status(400).json("The form data is missing a controller.");
-      return;
-    }
-
-    req.bodyWithoutFile = bodyWithoutFile.data!;
-
-    next();
   },
   (req, _res, next) => {
-    if (req.bodyWithoutFile?.balanceGroup === "legal") {
+    if (req.bodyWithoutFile.balanceGroup === "legal") {
       next();
-    } else if (req.bodyWithoutFile?.balanceGroup === "private") {
+    } else if (req.bodyWithoutFile.balanceGroup === "private") {
       next("route");
     }
   },
