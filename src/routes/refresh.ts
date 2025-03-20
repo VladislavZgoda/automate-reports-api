@@ -2,18 +2,23 @@ import express from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { findToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
+import { z } from "zod";
+
+const refreshTokenSchema = z.object({
+  token: z.string(),
+})
 
 const router = express.Router();
 
 router.get("/refresh", (req, res) => {
-  const refreshToken = req.signedCookies.token as string | undefined;
+  const refreshToken = refreshTokenSchema.safeParse(req.signedCookies)
 
-  if (!refreshToken) {
+  if (!refreshToken.success) {
     res.status(401).json("You are not authenticated.");
     return;
   }
 
-  const dbToken = findToken(refreshToken);
+  const dbToken = findToken(refreshToken.data.token);
 
   if (!dbToken) {
     res.status(403).json("Token is not valid.");
@@ -28,7 +33,7 @@ router.get("/refresh", (req, res) => {
     return;
   }
 
-  jsonwebtoken.verify(refreshToken, secretRefreshKey, (err, payload) => {
+  jsonwebtoken.verify(refreshToken.data.token, secretRefreshKey, (err, payload) => {
     if (err) {
       console.log(err.name);
 
