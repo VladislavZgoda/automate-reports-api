@@ -30,10 +30,8 @@ const bodyWithoutFileSchema = z
 
 declare module "express-serve-static-core" {
   interface Request {
-    bodyWithoutFile: {
-      balanceGroup: "private" | "legal";
-      controller?: string;
-    };
+    balanceGroup: "private" | "legal";
+    controller: string;
   }
 }
 
@@ -101,20 +99,26 @@ router.post(
         return;
       }
     } else {
-      req.bodyWithoutFile = bodyWithoutFile.data;
+      const controller = bodyWithoutFile.data.controller;
+
+      if (controller) {
+        req.controller = controller;
+      }
+
+      req.balanceGroup = bodyWithoutFile.data.balanceGroup;
 
       next();
     }
   },
   (req, _res, next) => {
-    if (req.bodyWithoutFile.balanceGroup === "legal") {
+    if (req.balanceGroup === "legal") {
       next();
-    } else if (req.bodyWithoutFile.balanceGroup === "private") {
+    } else if (req.balanceGroup === "private") {
       next("route");
     }
   },
   async (req, res) => {
-    const fileName = req.file!.filename;
+    const fileName = req.file?.filename;
     const uploadedFilePath = `upload/${fileName}`;
     const excel = new exceljs.Workbook();
     const wb = await excel.xlsx.readFile(uploadedFilePath);
@@ -139,8 +143,8 @@ router.post(
 );
 
 router.post("/matritca/", async (req, res) => {
-  const fileName = req.file!.filename;
-  const controller = req.bodyWithoutFile.controller!;
+  const fileName = req.file?.filename;
+  const controller = req.controller;
   const uploadedFilePath = `upload/${fileName}`;
   const excel = new exceljs.Workbook();
   const wb = await excel.xlsx.readFile(uploadedFilePath);
