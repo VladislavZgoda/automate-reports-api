@@ -23,7 +23,7 @@ router.post("/logout", (req, res) => {
   const refreshToken = refreshTokenSchema.safeParse(req.signedCookies);
 
   if (!refreshToken.success) {
-    res.status(401).json(refreshToken.error.message);
+    res.status(401).json(refreshToken.error.issues[0].message);
     return;
   }
 
