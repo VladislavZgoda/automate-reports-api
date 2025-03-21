@@ -1,6 +1,6 @@
-import exceljs from "exceljs";
-import type { Borders } from "exceljs";
 import { randomUUID } from "crypto";
+import type { Borders } from "exceljs";
+import exceljs from "exceljs";
 import type { Alignment } from "./types.ts";
 
 export default async function createReadingSheet(

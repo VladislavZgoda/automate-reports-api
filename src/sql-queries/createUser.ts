@@ -1,6 +1,6 @@
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import { DatabaseSync } from "node:sqlite";
 import { argv, exit } from "node:process";
+import { DatabaseSync } from "node:sqlite";
 
 const userName = argv[2];
 const userPassword = argv[3];

@@ -1,8 +1,8 @@
 import { compareSync } from "bcrypt-ts";
-import express from "express";
 import bodyParser from "body-parser";
+import express from "express";
 import findUser from "src/sql-queries/findUser.ts";
-import { insertToken, deleteToken } from "src/sql-queries/handleTokens.ts";
+import { deleteToken, insertToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
 import { z } from "zod";
 

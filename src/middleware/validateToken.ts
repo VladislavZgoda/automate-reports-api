@@ -1,4 +1,4 @@
-import type { NextFunction, response, request } from "express";
+import type { NextFunction, request, response } from "express";
 import jsonwebtoken from "jsonwebtoken";
 
 export default function validateToken(

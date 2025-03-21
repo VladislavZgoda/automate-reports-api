@@ -1,5 +1,5 @@
-import { DatabaseSync } from "node:sqlite";
 import { argv, exit } from "node:process";
+import { DatabaseSync } from "node:sqlite";
 import selectUserID from "./selectUserId.ts";
 
 const currentUserName = argv[2];

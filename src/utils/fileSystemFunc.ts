@@ -1,5 +1,5 @@
-import { mkdir } from "node:fs/promises";
 import { existsSync, unlink } from "node:fs";
+import { mkdir } from "node:fs/promises";
 
 export async function folderExists(folderName: string) {
   if (!existsSync(folderName)) {

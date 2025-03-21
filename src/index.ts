@@ -1,12 +1,12 @@
-import express from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
-import { matritcaRoute } from "./routes/matritca.ts";
-import { odpyRoute } from "./routes/odpy.ts";
+import cors from "cors";
+import express from "express";
+import { folderExists } from "src/utils/fileSystemFunc.ts";
 import { loginRoute } from "./routes/login.ts";
 import { logoutRoute } from "./routes/logout.ts";
+import { matritcaRoute } from "./routes/matritca.ts";
+import { odpyRoute } from "./routes/odpy.ts";
 import { refreshRoute } from "./routes/refresh.ts";
-import { folderExists } from "src/utils/fileSystemFunc.ts";
 
 await folderExists("upload");
 await folderExists("parsed-excel");

@@ -1,5 +1,5 @@
-import exceljs from "exceljs";
 import type { Borders } from "exceljs";
+import exceljs from "exceljs";
 import type { Alignment } from "./types.ts";
 
 interface Args {
