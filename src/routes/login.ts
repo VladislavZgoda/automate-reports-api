@@ -4,6 +4,12 @@ import bodyParser from "body-parser";
 import findUser from "src/sql-queries/findUser.ts";
 import { insertToken, deleteToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
+import { z } from "zod";
+
+const requestBodySchema = z.object({
+  login: z.string(),
+  password: z.string(),
+});
 
 const router = express.Router();
 
@@ -11,7 +17,7 @@ router.post(
   "/login",
   bodyParser.json(),
   (req, res, next) => {
-    if (!req.body?.login || !req.body?.password) {
+    if (!requestBodySchema.safeParse(req.body).success) {
       res.status(400).json("Login or password is missing.");
       return;
     }
@@ -19,7 +25,7 @@ router.post(
     next();
   },
   (req, res) => {
-    const { login, password }: { login: string; password: string } = req.body;
+    const { login, password } = requestBodySchema.parse(req.body);
 
     const user = findUser(login);
 
