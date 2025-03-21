@@ -5,16 +5,16 @@ import { generateToken } from "src/utils/generateTokens.ts";
 import { z } from "zod";
 
 const refreshTokenSchema = z.object({
-  token: z.string(),
-})
+  token: z.string({ message: "You are not authenticated." }),
+});
 
 const router = express.Router();
 
 router.get("/refresh", (req, res) => {
-  const refreshToken = refreshTokenSchema.safeParse(req.signedCookies)
+  const refreshToken = refreshTokenSchema.safeParse(req.signedCookies);
 
   if (!refreshToken.success) {
-    res.status(401).json("You are not authenticated.");
+    res.status(401).json(refreshToken.error.message);
     return;
   }
 
@@ -33,28 +33,32 @@ router.get("/refresh", (req, res) => {
     return;
   }
 
-  jsonwebtoken.verify(refreshToken.data.token, secretRefreshKey, (err, payload) => {
-    if (err) {
-      console.log(err.name);
+  jsonwebtoken.verify(
+    refreshToken.data.token,
+    secretRefreshKey,
+    (err, payload) => {
+      if (err) {
+        console.log(err.name);
 
-      res.status(403).json("Token is not valid.");
-      return;
-    }
+        res.status(403).json("Token is not valid.");
+        return;
+      }
 
-    const data = payload as {
-      payload: { id: number; userName: string };
-      iat: number;
-    };
-    const userData = data.payload;
+      const data = payload as {
+        payload: { id: number; userName: string };
+        iat: number;
+      };
 
-    const newAccessToken = generateToken(userData, secretAccessKey, "20m");
+      const userData = data.payload;
+      const newAccessToken = generateToken(userData, secretAccessKey, "20m");
 
-    res.set("Cache-Control", "no-store");
+      res.set("Cache-Control", "no-store");
 
-    res.status(200).json({
-      accessToken: newAccessToken,
-    });
-  });
+      res.status(200).json({
+        accessToken: newAccessToken,
+      });
+    },
+  );
 });
 
 export { router as refreshRoute };
