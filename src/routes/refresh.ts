@@ -50,7 +50,7 @@ router.get("/refresh", (req, res) => {
       };
 
       const userData = data.payload;
-      const newAccessToken = generateToken(userData, secretAccessKey, "20m");
+      const newAccessToken = generateToken(userData, secretAccessKey, "15m");
 
       res.set("Cache-Control", "no-store");
 
