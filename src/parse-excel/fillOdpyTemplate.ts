@@ -83,11 +83,13 @@ function parseMatritcaOdpy(
   ws: exceljs.Worksheet,
   meters: Record<MeterSerialNumber, MetersData>,
 ) {
-  for (let i = 2; i < ws.actualRowCount + 1; i++) {
+  for (let i = 2; i < ws.actualRowCount; i++) {
     const meteringPointName = ws
       .getCell("J" + i)
       .text.trim()
       .toUpperCase();
+
+    console.log(meteringPointName);
 
     if (meteringPointName === "ОДПУ") {
       let serialNumber = ws.getCell("C" + i).text.trim();
