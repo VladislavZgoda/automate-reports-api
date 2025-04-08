@@ -68,9 +68,9 @@ router.post(
     if (!(await validateMatritcaExport(matritcaOdpyPath))) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res.status(422).json({
-        file: "matritcaOdpy",
+        file: "simsFile",
         message:
-          "Заголовки таблицы xlsx не совпадают с заголовками экспорта по умолчанию из Sims.",
+          "The xlsx table headers do not match the default export headers from Sims.",
       });
       return;
     }
@@ -78,9 +78,9 @@ router.post(
     if (!(await validatePiramidaOdpy(piramidaOdpyPath))) {
       deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
       res.status(422).json({
-        file: "piramidaOdpy",
-        message:
-          "Заголовки таблицы xlsx не совпадают с заголовками отчёта по показаниям из Пирамида 2 с диапазоном в 4 суток.",
+        file: "piramidaFile",
+        message: `The xlsx table headers do not match the headers of the report
+           on readings from Pyramida 2 with a range of 4 days.`,
       });
       return;
     }
