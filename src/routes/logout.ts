@@ -1,34 +1,22 @@
 import express from "express";
 import jsonwebtoken from "jsonwebtoken";
+import validateCookie from "src/middleware/validateCookie.ts";
 import validateToken from "src/middleware/validateToken.ts";
-import { deleteToken, findToken } from "src/sql-queries/handleTokens.ts";
-import { payloadTokenSchema } from "src/validation/zodSchema.ts";
-import { z } from "zod";
+import { deleteToken } from "src/sql-queries/handleTokens.ts";
 
-const refreshTokenSchema = z.object({
-  token: z.string({ message: "You are not authenticated." }),
-});
+import {
+  payloadTokenSchema,
+  refreshTokenSchema,
+} from "src/validation/zodSchema.ts";
 
 const router = express.Router();
 
 router.use(validateToken);
+router.use(validateCookie);
 
 router.post("/logout", (req, res) => {
-  const refreshToken = refreshTokenSchema.safeParse(req.signedCookies);
-
-  if (!refreshToken.success) {
-    res.status(401).json(refreshToken.error.issues[0].message);
-    return;
-  }
-
-  const dbToken = findToken(refreshToken.data.token);
-
-  if (!dbToken) {
-    res.status(403).json("Token is not valid.");
-    return;
-  }
-
-  const decodedToken = jsonwebtoken.decode(dbToken.token);
+  const refreshToken = refreshTokenSchema.parse(req.signedCookies);
+  const decodedToken = jsonwebtoken.decode(refreshToken.token);
   const tokenPayload = payloadTokenSchema.parse(decodedToken);
 
   deleteToken(tokenPayload.payload.id);
