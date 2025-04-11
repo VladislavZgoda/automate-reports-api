@@ -6,3 +6,7 @@ export const payloadTokenSchema = z.object({
     userName: z.string(),
   }),
 });
+
+export const refreshTokenSchema = z.object({
+  token: z.string({ message: "You are not authenticated." }),
+});
