@@ -2,17 +2,11 @@ import express from "express";
 import jsonwebtoken from "jsonwebtoken";
 import validateToken from "src/middleware/validateToken.ts";
 import { deleteToken, findToken } from "src/sql-queries/handleTokens.ts";
+import { payloadTokenSchema } from "src/validation/zodSchema.ts";
 import { z } from "zod";
 
 const refreshTokenSchema = z.object({
   token: z.string({ message: "You are not authenticated." }),
-});
-
-const payloadTokenSchema = z.object({
-  payload: z.object({
-    id: z.number(),
-    userName: z.string(),
-  }),
 });
 
 const router = express.Router();

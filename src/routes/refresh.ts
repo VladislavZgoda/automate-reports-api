@@ -2,6 +2,7 @@ import express from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { findToken } from "src/sql-queries/handleTokens.ts";
 import { generateToken } from "src/utils/generateTokens.ts";
+import { payloadTokenSchema } from "src/validation/zodSchema.ts";
 import { z } from "zod";
 
 const refreshTokenSchema = z.object({
@@ -44,13 +45,8 @@ router.get("/refresh", (req, res) => {
         return;
       }
 
-      const data = payload as {
-        payload: { id: number; userName: string };
-        iat: number;
-      };
-
-      const userData = data.payload;
-      const newAccessToken = generateToken(userData, secretAccessKey, "15m");
+      const userData = payloadTokenSchema.parse(payload)
+      const newAccessToken = generateToken(userData.payload, secretAccessKey, "15m");
 
       res.set("Cache-Control", "no-store");
 
