@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import { folderExists } from "src/utils/fileSystemFunc.ts";
+import { legalEntitiesRoute } from "./routes/legalEntities.ts";
 import { loginRoute } from "./routes/login.ts";
 import { logoutRoute } from "./routes/logout.ts";
 import { matritcaRoute } from "./routes/matritca.ts";
@@ -28,6 +29,7 @@ app.use("/api", logoutRoute);
 
 app.use("/api", matritcaRoute);
 app.use("/api", odpyRoute);
+app.use("/api", legalEntitiesRoute);
 
 app.listen(port, () => {
   console.log(`Automate-reports-api app listening on port ${port}`);
