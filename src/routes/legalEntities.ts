@@ -2,6 +2,8 @@ import { randomUUID } from "crypto";
 import express from "express";
 import multer from "multer";
 import validateToken from "src/middleware/validateToken.ts";
+import validateCurrentMeterReadings from "src/parse-excel/validateCurrentMeterReadings.ts";
+import validateMeterReadings from "src/parse-excel/validateMeterReadings.ts";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
 
 const router = express.Router();
@@ -51,6 +53,26 @@ router.post(
         .json(
           "Only 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' content types supported.",
         );
+      return;
+    }
+
+    if (!(await validateMeterReadings(meterReadingsPath))) {
+      deleteFiles(meterReadingsPath, currentMeterReadingsPath);
+      res.status(422).json({
+        file: "meterReadings",
+        message: `The xlsx table headers do not match the default export headers
+           from report New Readings in Piramida 2.`,
+      });
+      return;
+    }
+
+    if (!(await validateCurrentMeterReadings(currentMeterReadingsPath))) {
+      deleteFiles(meterReadingsPath, currentMeterReadingsPath);
+      res.status(422).json({
+        file: "currentMeterReadings",
+        message: `The xlsx table headers do not match the headers of the
+           "A+ Current Timashevsk" balance group export from Pyramida 2.`,
+      });
       return;
     }
 
