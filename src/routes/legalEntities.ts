@@ -1,7 +1,9 @@
+import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
 import express from "express";
 import multer from "multer";
 import validateToken from "src/middleware/validateToken.ts";
+import fillLegalEntitiesTemplates from "src/parse-excel/fillLegalEntitiesTemplates.ts";
 import validateCurrentMeterReadings from "src/parse-excel/validateCurrentMeterReadings.ts";
 import validateMeterReadings from "src/parse-excel/validateMeterReadings.ts";
 import { deleteFiles } from "src/utils/fileSystemFunc.ts";
@@ -77,6 +79,36 @@ router.post(
     }
 
     next();
+  },
+  async (req, res) => {
+    const files = req.files as Record<string, Express.Multer.File[]>;
+    const meterReadingsPath = `upload/${files?.meterReadings?.[0].filename}`;
+    const currentMeterReadingsPath = `upload/${files?.currentMeterReadings?.[0].filename}`;
+
+    const supplementNinePath = await fillLegalEntitiesTemplates(
+      meterReadingsPath,
+      currentMeterReadingsPath,
+    );
+
+    const zip = new AdmZip();
+    zip.addLocalFile(supplementNinePath, undefined, `Приложение № 9 Юр.xlsx`);
+    const data = zip.toBuffer();
+
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${encodeURIComponent("Юр.zip")}`,
+    );
+
+    res.setHeader("Content-Length", `${data.length}`);
+    res.status(200).send(data);
+
+    deleteFiles(
+      meterReadingsPath,
+      currentMeterReadingsPath,
+      supplementNinePath,
+    );
   },
 );
 
