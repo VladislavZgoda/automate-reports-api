@@ -13,7 +13,7 @@ export default async function validateMeterReadings(filePath: string) {
 function checkHeaders(ws: exceljs.Worksheet) {
   const headersTableRow = ws.getRow(5);
 
-  if (!(headersTableRow.actualCellCount === 12)) return false;
+  if (!(headersTableRow.actualCellCount === 13)) return false;
 
   const headers = [
     "№пп",
@@ -24,10 +24,10 @@ function checkHeaders(ws: exceljs.Worksheet) {
     "Коэффициенты",
     "Тариф",
     "Измерение",
-    "Тарифная\nзона",
-    "Показания на начало\nпериода",
-    "Показания на конец\nпериода",
-    "Потребление за\nпериод",
+    "Тарифная зона",
+    "Показания на начало периода",
+    "Показания на конец периода",
+    "Потребление за период",
   ];
 
   let check = true;
