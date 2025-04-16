@@ -10,10 +10,14 @@ https://github.com/exceljs/exceljs/issues/1348
 Для работы сервера необходимо:
 1. Создать в корне проекта папку xlsx-templates.
 В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx".
-Затем создать в корне проекта файл ".env". В этом файле указать имя шаблона в переменными:
+Затем создать в корне проекта файл ".env". В этом файле указать имя шаблона c переменными:
 - ODPY_TEMPLATE
+- LEGAL_ENTITIES_TEMPLATE
+- TEMPLATE_230710001128
 Примеры:
 - ODPY_TEMPLATE = odpy_reading_sheet.xlsx
+- LEGAL_ENTITIES_TEMPLATE = legal_entities_sheet.xlsx
+- TEMPLATE_230710001128 = 230710001128.xlsx
 
 2. В файле .env создать для работы аутентификации:
 - SECRET_ACCESS_TOKEN
@@ -71,3 +75,11 @@ Response: json {
 Route http://IP:PORT/api/logout/
 Request: signed cookie with refreshToken
 Response: successful log out
+
+Route http://IP:PORT/api/legal-entities/
+Headers:
+- Authorization Bearer Token
+Request body:
+- meterReadings: xlsx файл экспорта отчёта "Новые показания" из Пирамида 2
+- currentMeterReadings: xlsx файл экспорта балансной группы "А+ Текущие Тимашевск" из Пирамида 2
+Response: zip с xlsx файлами
