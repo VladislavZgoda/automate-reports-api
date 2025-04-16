@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import exceljs from "exceljs";
 import { todayDate } from "src/utils/dateFunc.ts";
+import { handleActivePower, handleDate } from "src/utils/excelHelpFunc.ts";
 
 type MeterSerialNumber = string;
 
@@ -125,25 +126,4 @@ function fillTemplate(
       handleDate(ws, `K${i}`, askueDate);
     }
   }
-}
-
-function handleActivePower(ws: exceljs.Worksheet, cell: string, value: number) {
-  const currentCell = ws.getCell(cell);
-  currentCell.numFmt = "@";
-  currentCell.value = value.toFixed(2);
-
-  currentCell.alignment = {
-    vertical: "middle",
-    horizontal: "right",
-  };
-}
-
-function handleDate(ws: exceljs.Worksheet, cell: string, value: string) {
-  const currentCell = ws.getCell(cell);
-  currentCell.value = value;
-
-  currentCell.alignment = {
-    vertical: "middle",
-    horizontal: "center",
-  };
 }
