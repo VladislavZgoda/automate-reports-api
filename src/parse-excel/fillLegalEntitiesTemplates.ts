@@ -24,23 +24,39 @@ export default async function fillLegalEntitiesTemplates(
   );
   const wsCurrentMeterReadings = wbCurrentMeterReadings.worksheets[0];
 
-  const wbTemplate = await excel.xlsx.readFile(
+  const wbLegalEntitesTemplate = await excel.xlsx.readFile(
     `xlsx-templates/${process.env.LEGAL_ENTITIES_TEMPLATE}`,
   );
 
-  const wsTemplate = wbTemplate.worksheets[0];
+  const wsLegalEntitesTemplate = wbLegalEntitesTemplate.worksheets[0];
+
+  const wb230710001128 = await excel.xlsx.readFile(
+    `xlsx-templates/${process.env.TEMPLATE_230710001128}`,
+  );
+
+  const ws230710001128 = wb230710001128.worksheets[0];
+
   const meters: Record<MeterSerialNumber, MetersData> = {};
 
   parseMeterReadings(wsMeterReadings, meters);
   parseCurrentMeterReadings(wsCurrentMeterReadings, meters);
 
-  wsTemplate.removeConditionalFormatting("");
-  fillTemplate(wsTemplate, meters);
+  wsLegalEntitesTemplate.removeConditionalFormatting("");
+  fillTemplate(wsLegalEntitesTemplate, meters);
 
-  const saveFilePath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
-  await wbTemplate.xlsx.writeFile(saveFilePath);
+  ws230710001128.removeConditionalFormatting("");
+  fillTemplate(ws230710001128, meters);
 
-  return saveFilePath;
+  const saveLegalEntitesPath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
+  await wbLegalEntitesTemplate.xlsx.writeFile(saveLegalEntitesPath);
+
+  const save230710001128Path = `parsed-excel/230710001128${randomUUID()}.xlsx`;
+  await wb230710001128.xlsx.writeFile(save230710001128Path);
+
+  return {
+    legalEntities: saveLegalEntitesPath,
+    "230710001128": save230710001128Path,
+  };
 }
 
 function parseMeterReadings(

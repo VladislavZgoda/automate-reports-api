@@ -85,13 +85,25 @@ router.post(
     const meterReadingsPath = `upload/${files?.meterReadings?.[0].filename}`;
     const currentMeterReadingsPath = `upload/${files?.currentMeterReadings?.[0].filename}`;
 
-    const supplementNinePath = await fillLegalEntitiesTemplates(
+    const filePaths = await fillLegalEntitiesTemplates(
       meterReadingsPath,
       currentMeterReadingsPath,
     );
 
     const zip = new AdmZip();
-    zip.addLocalFile(supplementNinePath, undefined, `Приложение № 9 Юр.xlsx`);
+
+    zip.addLocalFile(
+      filePaths.legalEntities,
+      undefined,
+      "Приложение № 9 Юр.xlsx",
+    );
+
+    zip.addLocalFile(
+      filePaths[230710001128],
+      undefined,
+      "АСКУЭ_230710001128.xlsx",
+    );
+
     const data = zip.toBuffer();
 
     res.setHeader("Content-Type", "application/octet-stream");
@@ -107,7 +119,8 @@ router.post(
     deleteFiles(
       meterReadingsPath,
       currentMeterReadingsPath,
-      supplementNinePath,
+      filePaths.legalEntities,
+      filePaths[230710001128],
     );
   },
 );
