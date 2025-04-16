@@ -30,7 +30,11 @@ export default async function fillLegalEntitiesTemplates(
 
   const wsLegalEntitesTemplate = wbLegalEntitesTemplate.worksheets[0];
 
-  const wb230710001128 = await excel.xlsx.readFile(
+  // Без второго экземпляра writeFile записывает файлы как последний
+  // прочитанный. Из-за этого получается одно и тоже под разными именами.
+  const excel2 = new exceljs.Workbook();
+
+  const wb230710001128 = await excel2.xlsx.readFile(
     `xlsx-templates/${process.env.TEMPLATE_230710001128}`,
   );
 
@@ -67,9 +71,11 @@ function parseMeterReadings(
 
   // Без +2 не будет двух последних линий
   for (let i = 7; i < ws.actualRowCount + 2; i++) {
-    if (ws.getCell("K" + i).text) {
+    const reading = Number(ws.getCell("K" + i).text);
+
+    if (!isNaN(reading)) {
       meters[ws.getCell("E" + i).text] = {
-        reading: Number(ws.getCell("K" + i).text),
+        reading,
         date,
       };
     }
