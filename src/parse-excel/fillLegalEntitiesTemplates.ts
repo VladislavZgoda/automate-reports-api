@@ -49,7 +49,8 @@ function parseMeterReadings(
 ) {
   const date = ws.getCell("K6").text;
 
-  for (let i = 7; i < ws.actualRowCount + 1; i++) {
+  // Без +2 не будет двух последних линий
+  for (let i = 7; i < ws.actualRowCount + 2; i++) {
     if (ws.getCell("K" + i).text) {
       meters[ws.getCell("E" + i).text] = {
         reading: Number(ws.getCell("K" + i).text),
