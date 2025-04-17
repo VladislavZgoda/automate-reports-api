@@ -9,11 +9,13 @@ https://github.com/exceljs/exceljs/issues/1348
 
 Для работы сервера необходимо:
 1. Создать в корне проекта папку xlsx-templates.
-В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx".
+В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx", "Приложение №9 ЮР.xlsx", 230710001128.
+
 Затем создать в корне проекта файл ".env". В этом файле указать имя шаблона c переменными:
 - ODPY_TEMPLATE
 - LEGAL_ENTITIES_TEMPLATE
 - TEMPLATE_230710001128
+
 Примеры:
 - ODPY_TEMPLATE = odpy_reading_sheet.xlsx
 - LEGAL_ENTITIES_TEMPLATE = legal_entities_sheet.xlsx
@@ -26,6 +28,7 @@ https://github.com/exceljs/exceljs/issues/1348
 3. В терминале выполнить скрипт "npm run db:createDb".
 
 4. Создать пользователя выполнив в терминале скрипт "npm run db:createUser имя пароль".
+
 Дополнительные скрипты для работы с дб:
 - "npm run db:changeUserPassword имя_пользователя новый_пароль"
 - "npm run db:changeUserName изменяемое_имя_пользователя новое_имя_пользователя"
