@@ -8,6 +8,7 @@ import { logoutRoute } from "./routes/logout.ts";
 import { matritcaRoute } from "./routes/matritca.ts";
 import { odpyRoute } from "./routes/odpy.ts";
 import { refreshRoute } from "./routes/refresh.ts";
+import { vipRoute } from "./routes/vip.ts";
 
 await folderExists("upload");
 await folderExists("parsed-excel");
@@ -30,6 +31,7 @@ app.use("/api", logoutRoute);
 app.use("/api", matritcaRoute);
 app.use("/api", odpyRoute);
 app.use("/api", legalEntitiesRoute);
+app.use("/api", vipRoute);
 
 app.listen(port, () => {
   console.log(`Automate-reports-api app listening on port ${port}`);
