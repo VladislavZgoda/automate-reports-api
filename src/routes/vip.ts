@@ -1,10 +1,12 @@
+import AdmZip from "adm-zip";
 import { randomUUID } from "crypto";
 import express from "express";
 import multer from "multer";
 import validateToken from "src/middleware/validateToken.ts";
+import fillVipTemplates from "src/parse-excel/fillVipTemplates.ts";
 import validateMatritcaExport from "src/parse-excel/validateMatritcaExport.ts";
 import validateMeterReadings from "src/parse-excel/validateMeterReadings.ts";
-import { deleteFiles } from "src/utils/fileSystemFunc.ts";
+import { deleteDir, deleteFiles } from "src/utils/fileSystemFunc.ts";
 
 const router = express.Router();
 
@@ -43,8 +45,8 @@ router.post(
 
     if (
       !(
-        files.matritcaOdpy[0].mimetype === mimetype &&
-        files.piramidaOdpy[0].mimetype === mimetype
+        files.simsFile[0].mimetype === mimetype &&
+        files.piramidaFile[0].mimetype === mimetype
       )
     ) {
       deleteFiles(simsFilePath, piramidaFilePath);
@@ -82,6 +84,26 @@ router.post(
     const files = req.files as Record<string, Express.Multer.File[]>;
     const simsFilePath = `upload/${files?.simsFile?.[0].filename}`;
     const piramidaFilePath = `upload/${files?.piramidaFile?.[0].filename}`;
+
+    const vipDirPath = await fillVipTemplates(simsFilePath, piramidaFilePath);
+
+    const zip = new AdmZip();
+    zip.addLocalFolder(vipDirPath);
+
+    const data = zip.toBuffer();
+
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${encodeURIComponent("ВИП.zip")}`,
+    );
+
+    res.setHeader("Content-Length", `${data.length}`);
+    res.status(200).send(data);
+
+    deleteDir(vipDirPath);
+    deleteFiles(simsFilePath, piramidaFilePath);
   },
 );
 

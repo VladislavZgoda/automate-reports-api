@@ -1,4 +1,4 @@
-import { existsSync, unlink, rm } from "node:fs";
+import { existsSync, rm, unlink } from "node:fs";
 import { mkdir } from "node:fs/promises";
 
 export async function folderExists(folderName: string) {
