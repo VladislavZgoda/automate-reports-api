@@ -21,6 +21,8 @@ https://github.com/exceljs/exceljs/issues/1348
 - LEGAL_ENTITIES_TEMPLATE = legal_entities_sheet.xlsx
 - TEMPLATE_230710001128 = 230710001128.xlsx
 
+В xlsx-templates создать папку vip с шаблонами.
+
 2. В файле .env создать для работы аутентификации:
 - SECRET_ACCESS_TOKEN
 - SECRET_REFRESH_TOKEN
@@ -61,6 +63,24 @@ Request body:
 Response: zip с xlsx файлами
 
 
+Route http://IP:PORT/api/legal-entities/
+Headers:
+- Authorization Bearer Token
+Request body:
+- meterReadings: xlsx файл экспорта отчёта "Новые показания" из Пирамида 2
+- currentMeterReadings: xlsx файл экспорта балансной группы "А+ Текущие Тимашевск" из Пирамида 2
+Response: zip с xlsx файлами
+
+
+Route http://IP:PORT/api/vip/
+Headers:
+- Authorization Bearer Token
+Request body:
+- simsFile: xlsx файл с выгрузкой из ПО Sims
+- piramidaFile: xlsx файл экспорта отчёта "Новые показания" из Пирамида 2
+Response: zip с xlsx файлами
+
+
 Route http://IP:PORT/api/login/
 Request body:
 - login: имя пользователя
@@ -78,11 +98,3 @@ Response: json {
 Route http://IP:PORT/api/logout/
 Request: signed cookie with refreshToken
 Response: successful log out
-
-Route http://IP:PORT/api/legal-entities/
-Headers:
-- Authorization Bearer Token
-Request body:
-- meterReadings: xlsx файл экспорта отчёта "Новые показания" из Пирамида 2
-- currentMeterReadings: xlsx файл экспорта балансной группы "А+ Текущие Тимашевск" из Пирамида 2
-Response: zip с xlsx файлами
