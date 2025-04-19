@@ -1,7 +1,12 @@
 import { randomUUID } from "crypto";
 import exceljs from "exceljs";
 import { todayDate } from "src/utils/dateFunc.ts";
-import { handleActivePower, handleDate } from "src/utils/excelHelpFunc.ts";
+
+import {
+  handleActivePower,
+  handleDate,
+  parseReportNewReadings,
+} from "src/utils/excelHelpFunc.ts";
 
 type MeterSerialNumber = string;
 
@@ -42,7 +47,7 @@ export default async function fillLegalEntitiesTemplates(
 
   const meters: Record<MeterSerialNumber, MetersData> = {};
 
-  parseMeterReadings(wsMeterReadings, meters);
+  parseReportNewReadings(wsMeterReadings, meters);
   parseCurrentMeterReadings(wsCurrentMeterReadings, meters);
 
   wsLegalEntitesTemplate.removeConditionalFormatting("");
@@ -61,25 +66,6 @@ export default async function fillLegalEntitiesTemplates(
     legalEntities: saveLegalEntitesPath,
     "230710001128": save230710001128Path,
   };
-}
-
-function parseMeterReadings(
-  ws: exceljs.Worksheet,
-  meters: Record<MeterSerialNumber, MetersData>,
-) {
-  const date = ws.getCell("K6").text;
-
-  // Без +2 не будет двух последних линий
-  for (let i = 7; i < ws.actualRowCount + 2; i++) {
-    const reading = Number(ws.getCell("K" + i).text);
-
-    if (!isNaN(reading)) {
-      meters[ws.getCell("E" + i).text] = {
-        reading,
-        date,
-      };
-    }
-  }
 }
 
 function parseCurrentMeterReadings(
