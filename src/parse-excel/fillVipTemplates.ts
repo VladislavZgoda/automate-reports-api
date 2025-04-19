@@ -34,12 +34,12 @@ export default async function fillVipTemplates(
   parseSimsFile(wsSimsFile, meters);
   parseReportNewReadings(wsPiramidaFile, meters);
 
-  const saveVipFolderPath = `parsed-excel/vip${randomUUID()}`;
-  await mkdir(saveVipFolderPath);
+  const saveVipDirPath = `parsed-excel/vip${randomUUID()}`;
+  await mkdir(saveVipDirPath);
 
-  await fillTemplates(meters, saveVipFolderPath);
+  await fillTemplates(meters, saveVipDirPath);
 
-  return saveVipFolderPath;
+  return saveVipDirPath;
 }
 
 function parseSimsFile(
@@ -70,24 +70,24 @@ function parseSimsFile(
 
 async function fillTemplates(
   meters: Record<MeterSerialNumber, MetersData>,
-  saveVipFolderPath: string,
+  saveVipDirPath: string,
 ) {
-  const templatesFolderPath = "xlsx-templates/vip";
+  const templatesDirPath = "xlsx-templates/vip";
 
-  const templateFilesPaths = (await readdir(templatesFolderPath)).map(
+  const templateFilesPaths = (await readdir(templatesDirPath)).map(
     (fileName) => {
-      return path.join(templatesFolderPath, fileName);
+      return path.join(templatesDirPath, fileName);
     },
   );
 
   for (const path of templateFilesPaths)
-    await fillTemplate(meters, path, saveVipFolderPath);
+    await fillTemplate(meters, path, saveVipDirPath);
 }
 
 async function fillTemplate(
   meters: Record<MeterSerialNumber, MetersData>,
   templateFilePath: string,
-  saveVipFolderPath: string,
+  saveVipDirPath: string,
 ) {
   const excel = new exceljs.Workbook();
 
@@ -108,6 +108,6 @@ async function fillTemplate(
 
   const fileName = templateFilePath.slice(19);
 
-  const saveFolderPath = `${saveVipFolderPath}/${fileName}`;
+  const saveFolderPath = `${saveVipDirPath}/${fileName}`;
   await wb.xlsx.writeFile(saveFolderPath);
 }
