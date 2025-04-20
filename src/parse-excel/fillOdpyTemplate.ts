@@ -90,8 +90,6 @@ function parseMatritcaOdpy(
       .text.trim()
       .toUpperCase();
 
-    console.log(meteringPointName);
-
     if (meteringPointName === "ОДПУ") {
       let serialNumber = ws.getCell("C" + i).text.trim();
       if (serialNumber.length === 7) serialNumber = "0" + serialNumber;
