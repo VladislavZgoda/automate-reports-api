@@ -52,8 +52,8 @@ Route http://IP:PORT/api/odpy/
 Headers:
 - Authorization Bearer Token
 Request body:
-- matritcaOdpy: xlsx файл с выгрузкой из ПО Sims
-- piramidaOdpy: xlsx файл с выгрузкой из ПО Пирамида2,
+- simsFile: xlsx файл с выгрузкой из ПО Sims
+- piramidaFile: xlsx файл с выгрузкой из ПО Пирамида2,
   отчет "Отчет по показаниям, по тарифам (Сут А+)" с диапазоном в 4 суток
 - controller: ФИО сотрудника
 Response: zip с xlsx файлами
