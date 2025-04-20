@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
 import exceljs from "exceljs";
+import { mkdir, readdir } from "node:fs/promises";
+import path from "node:path";
 import { todayDate } from "src/utils/dateFunc.ts";
 
 import {
@@ -29,43 +31,17 @@ export default async function fillLegalEntitiesTemplates(
   );
   const wsCurrentMeterReadings = wbCurrentMeterReadings.worksheets[0];
 
-  const wbLegalEntitesTemplate = await excel.xlsx.readFile(
-    `xlsx-templates/${process.env.LEGAL_ENTITIES_TEMPLATE}`,
-  );
-
-  const wsLegalEntitesTemplate = wbLegalEntitesTemplate.worksheets[0];
-
-  // Без второго экземпляра writeFile записывает файлы как последний
-  // прочитанный. Из-за этого получается одно и тоже под разными именами.
-  const excel2 = new exceljs.Workbook();
-
-  const wb230710001128 = await excel2.xlsx.readFile(
-    `xlsx-templates/${process.env.TEMPLATE_230710001128}`,
-  );
-
-  const ws230710001128 = wb230710001128.worksheets[0];
-
   const meters: Record<MeterSerialNumber, MetersData> = {};
 
   parseReportNewReadings(wsMeterReadings, meters);
   parseCurrentMeterReadings(wsCurrentMeterReadings, meters);
 
-  wsLegalEntitesTemplate.removeConditionalFormatting("");
-  fillTemplate(wsLegalEntitesTemplate, meters);
+  const saveLegalDirPath = `parsed-excel/legal${randomUUID()}`;
+  await mkdir(saveLegalDirPath);
 
-  ws230710001128.removeConditionalFormatting("");
-  fillTemplate(ws230710001128, meters);
+  await fillTemplates(meters, saveLegalDirPath);
 
-  const saveLegalEntitesPath = `parsed-excel/supplement_nine${randomUUID()}.xlsx`;
-  await wbLegalEntitesTemplate.xlsx.writeFile(saveLegalEntitesPath);
-
-  const save230710001128Path = `parsed-excel/230710001128${randomUUID()}.xlsx`;
-  await wb230710001128.xlsx.writeFile(save230710001128Path);
-
-  return {
-    legalEntities: saveLegalEntitesPath,
-    "230710001128": save230710001128Path,
-  };
+  return saveLegalDirPath;
 }
 
 function parseCurrentMeterReadings(
@@ -92,10 +68,32 @@ function parseCurrentMeterReadings(
   }
 }
 
-function fillTemplate(
-  ws: exceljs.Worksheet,
+async function fillTemplates(
   meters: Record<MeterSerialNumber, MetersData>,
+  saveDirPath: string,
 ) {
+  const templatesDirPath = "xlsx-templates/legal";
+
+  const templateFilesPaths = (await readdir(templatesDirPath)).map(
+    (fileName) => {
+      return path.join(templatesDirPath, fileName);
+    },
+  );
+
+  for (const path of templateFilesPaths)
+    await fillTemplate(meters, path, saveDirPath);
+}
+
+async function fillTemplate(
+  meters: Record<MeterSerialNumber, MetersData>,
+  templateFilePath: string,
+  saveDirPath: string,
+) {
+  const excel = new exceljs.Workbook();
+
+  const wb = await excel.xlsx.readFile(templateFilePath);
+  const ws = wb.worksheets[0];
+
   const askueDate = todayDate();
 
   for (let i = 3; i < ws.actualRowCount + 1; i++) {
@@ -107,4 +105,9 @@ function fillTemplate(
       handleDate(ws, `K${i}`, askueDate);
     }
   }
+
+  const fileName = templateFilePath.slice(21);
+
+  const saveFilePath = `${saveDirPath}/${fileName}`;
+  await wb.xlsx.writeFile(saveFilePath);
 }
