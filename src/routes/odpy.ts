@@ -33,16 +33,16 @@ const upload = multer({ storage: storage });
 router.post(
   "/odpy/",
   upload.fields([
-    { name: "matritcaOdpy", maxCount: 1 },
-    { name: "piramidaOdpy", maxCount: 1 },
+    { name: "simsFile", maxCount: 1 },
+    { name: "piramidaFile", maxCount: 1 },
   ]),
   async (req, res, next) => {
     const files = req.files as Record<string, Express.Multer.File[]>;
-    const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
-    const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
+    const simsFilePath = `upload/${files?.simsFile?.[0].filename}`;
+    const piramidaFilePath = `upload/${files?.piramidaFile?.[0].filename}`;
 
     if (Object.keys(files).length < 2) {
-      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      deleteFiles(simsFilePath, piramidaFilePath);
       res.status(400).json("The form data is missing a xlsx files.");
       return;
     }
@@ -52,11 +52,11 @@ router.post(
 
     if (
       !(
-        files.matritcaOdpy[0].mimetype === mimetype &&
-        files.piramidaOdpy[0].mimetype === mimetype
+        files.simsFile[0].mimetype === mimetype &&
+        files.piramidaFile[0].mimetype === mimetype
       )
     ) {
-      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      deleteFiles(simsFilePath, piramidaFilePath);
       res
         .status(415)
         .json(
@@ -65,8 +65,8 @@ router.post(
       return;
     }
 
-    if (!(await validateMatritcaExport(matritcaOdpyPath))) {
-      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+    if (!(await validateMatritcaExport(simsFilePath))) {
+      deleteFiles(simsFilePath, piramidaFilePath);
       res.status(422).json({
         file: "simsFile",
         message:
@@ -75,8 +75,8 @@ router.post(
       return;
     }
 
-    if (!(await validatePiramidaOdpy(piramidaOdpyPath))) {
-      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+    if (!(await validatePiramidaOdpy(piramidaFilePath))) {
+      deleteFiles(simsFilePath, piramidaFilePath);
       res.status(422).json({
         file: "piramidaFile",
         message: `The xlsx table headers do not match the headers of the report
@@ -88,7 +88,7 @@ router.post(
     const controller = controllerSchema.safeParse(req.body).success;
 
     if (!controller) {
-      deleteFiles(matritcaOdpyPath, piramidaOdpyPath);
+      deleteFiles(simsFilePath, piramidaFilePath);
       res.status(400).json("The form data is missing a controller.");
       return;
     }
@@ -97,13 +97,13 @@ router.post(
   },
   async (req, res) => {
     const files = req.files as Record<string, Express.Multer.File[]>;
-    const matritcaOdpyPath = `upload/${files?.matritcaOdpy?.[0].filename}`;
-    const piramidaOdpyPath = `upload/${files?.piramidaOdpy?.[0].filename}`;
+    const simsFilePath = `upload/${files?.simsFile?.[0].filename}`;
+    const piramidaFilePath = `upload/${files?.piramidaFile?.[0].filename}`;
     const controller = controllerSchema.parse(req.body).controller;
 
     const supplementNinePath = await fillOdpyTemplate(
-      matritcaOdpyPath,
-      piramidaOdpyPath,
+      simsFilePath,
+      piramidaFilePath,
     );
 
     const readingSheetPath = await createReadingSheet(
@@ -134,8 +134,8 @@ router.post(
     res.status(200).send(data);
 
     deleteFiles(
-      matritcaOdpyPath,
-      piramidaOdpyPath,
+      simsFilePath,
+      piramidaFilePath,
       supplementNinePath,
       readingSheetPath,
     );
