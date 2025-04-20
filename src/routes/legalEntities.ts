@@ -6,7 +6,7 @@ import validateToken from "src/middleware/validateToken.ts";
 import fillLegalEntitiesTemplates from "src/parse-excel/fillLegalEntitiesTemplates.ts";
 import validateCurrentMeterReadings from "src/parse-excel/validateCurrentMeterReadings.ts";
 import validateMeterReadings from "src/parse-excel/validateMeterReadings.ts";
-import { deleteFiles } from "src/utils/fileSystemFunc.ts";
+import { deleteDir, deleteFiles } from "src/utils/fileSystemFunc.ts";
 
 const router = express.Router();
 
@@ -85,24 +85,13 @@ router.post(
     const meterReadingsPath = `upload/${files?.meterReadings?.[0].filename}`;
     const currentMeterReadingsPath = `upload/${files?.currentMeterReadings?.[0].filename}`;
 
-    const filePaths = await fillLegalEntitiesTemplates(
+    const legalDirPath = await fillLegalEntitiesTemplates(
       meterReadingsPath,
       currentMeterReadingsPath,
     );
 
     const zip = new AdmZip();
-
-    zip.addLocalFile(
-      filePaths.legalEntities,
-      undefined,
-      "Приложение № 9 Юр.xlsx",
-    );
-
-    zip.addLocalFile(
-      filePaths[230710001128],
-      undefined,
-      "АСКУЭ_230710001128.xlsx",
-    );
+    zip.addLocalFolder(legalDirPath);
 
     const data = zip.toBuffer();
 
@@ -116,12 +105,8 @@ router.post(
     res.setHeader("Content-Length", `${data.length}`);
     res.status(200).send(data);
 
-    deleteFiles(
-      meterReadingsPath,
-      currentMeterReadingsPath,
-      filePaths.legalEntities,
-      filePaths[230710001128],
-    );
+    deleteDir(legalDirPath);
+    deleteFiles(meterReadingsPath, currentMeterReadingsPath);
   },
 );
 
