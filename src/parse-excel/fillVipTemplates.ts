@@ -94,6 +94,8 @@ async function fillTemplate(
   const wb = await excel.xlsx.readFile(templateFilePath);
   const ws = wb.worksheets[0];
 
+  ws.removeConditionalFormatting("");
+
   const askueDate = todayDate();
 
   for (let i = 3; i < ws.actualRowCount + 1; i++) {
