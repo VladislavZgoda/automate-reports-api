@@ -71,7 +71,7 @@ router.post(
     if (!(await validateMeterReadings(piramidaFilePath))) {
       deleteFiles(simsFilePath, piramidaFilePath);
       res.status(422).json({
-        file: "meterReadings",
+        file: "piramidaFile",
         message: `The xlsx table headers do not match the default export headers
                from report New Readings in Piramida 2.`,
       });
