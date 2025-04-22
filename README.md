@@ -9,13 +9,17 @@ https://github.com/exceljs/exceljs/issues/1348
 
 Для работы сервера необходимо:
 1. Создать в корне проекта папку xlsx-templates.
-В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx".
+В эту папку вложить шаблоны "Приложение №9 ОДПУ.xlsx" и для микрогенерации по быту и юр лицам.
 
 Затем создать в корне проекта файл ".env". В этом файле указать имя шаблона c переменными:
 - ODPY_TEMPLATE
+- MICROGENERATION_P
+- MICROGENERATION_L
 
 Примеры:
 - ODPY_TEMPLATE = odpy_reading_sheet.xlsx
+- MICROGENERATION_P = microgeneration_private.xlsx
+- MICROGENERATION_L = microgeneration_legal.xlsx
 
 В xlsx-templates создать папки vip, legal с шаблонами.
 
@@ -75,6 +79,15 @@ Request body:
 - simsFile: xlsx файл с выгрузкой из ПО Sims
 - piramidaFile: xlsx файл экспорта отчёта "Новые показания" из Пирамида 2
 Response: zip с xlsx файлами
+
+
+Route http://IP:PORT/api/microgeneration/
+Headers:
+- Authorization Bearer Token
+Request body:
+- file: xlsx файл с выгрузкой активной энергии импорт и экспорт из ПО Sims
+- balanceGroup: "private" === Быт | "legal" === Юридические лица
+Response: xlsx файл
 
 
 Route http://IP:PORT/api/login/
