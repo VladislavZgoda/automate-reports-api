@@ -28,11 +28,15 @@ export default async function fillMicrogeneration(
 }
 
 function addSerialNumbers(ws: exceljs.Worksheet, serialNumbersArr: number[]) {
-  ws.getColumn("C").eachCell((cell) => {
-    const serialNumber = Number(cell.text.trim());
+  for (let i = 3; i <= ws.actualRowCount; i++) {
+    const cellValue = ws.getCell("C" + i).text.trim();
+
+    if (!cellValue) continue;
+
+    const serialNumber = Number(cellValue);
 
     if (!isNaN(serialNumber)) serialNumbersArr.push(serialNumber);
-  });
+  }
 }
 
 async function parseUploadedFile(
