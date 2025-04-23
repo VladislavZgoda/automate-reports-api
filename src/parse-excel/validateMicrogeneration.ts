@@ -25,7 +25,7 @@ function checkHeaders(ws: exceljs.Worksheet) {
     "Активная энергия, экспорт, тариф1",
     "Активная энергия, экспорт, тариф2",
     "Активная энергия, экспорт, тариф3",
-    "Активная энергия, экспорт",
+    "Активная энергия экспорт",
     "Адрес",
     "Наименование точки учета",
     "Тип устройства",
@@ -34,10 +34,10 @@ function checkHeaders(ws: exceljs.Worksheet) {
   let i = 0;
   let check = true;
 
-  ws.unMergeCells("K2:L2");
+  ws.unMergeCells("O2:P2");
 
   ws.getRow(2).eachCell((cell) => {
-    if (cell.value !== secondRowHeaders[i]) check = false;
+    if (cell.text !== secondRowHeaders[i]) check = false;
     i++;
   });
 
