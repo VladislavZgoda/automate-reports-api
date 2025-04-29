@@ -58,7 +58,7 @@ router.post(
     res.cookie("token", refreshToken, {
       httpOnly: true,
       signed: true,
-      maxAge: 3 * 86400,
+      maxAge: 86400000, // Один день в мс
       sameSite: "strict",
     });
 
