@@ -134,9 +134,10 @@ router.post(
       `attachment; filename="${encodeURIComponent("Приложение №9 Юр.xlsx")}"`,
     );
 
-    void wb.xlsx
+    wb.xlsx
       .write(res)
       .then(() => res.status(200).end())
+      .catch((error) => console.log(error))
       .finally(() => deleteFile(uploadedFilePath));
   },
 );
