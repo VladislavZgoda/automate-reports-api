@@ -55,11 +55,11 @@ router.post(
 
     if (!(await validateMicrogeneration(filePath))) {
       deleteFile(filePath);
-      res
-        .status(422)
-        .json(
-          "The xlsx table headers are not the same as the default export from Sims.",
-        );
+      res.status(422).json({
+        file: "simsFile",
+        message:
+          "The xlsx table headers do not match the Sims Acive Energy Import/Export file headers.",
+      });
       return;
     }
 
