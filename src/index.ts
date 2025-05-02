@@ -8,6 +8,7 @@ import { logoutRoute } from "./routes/logout.ts";
 import { matritcaRoute } from "./routes/matritca.ts";
 import { microgenerationRoute } from "./routes/microgeneration.ts";
 import { odpyRoute } from "./routes/odpy.ts";
+import { privateNotTransferredRoute } from "./routes/privateNotTransferred.ts";
 import { refreshRoute } from "./routes/refresh.ts";
 import { vipRoute } from "./routes/vip.ts";
 
@@ -34,6 +35,7 @@ app.use("/api", odpyRoute);
 app.use("/api", legalEntitiesRoute);
 app.use("/api", vipRoute);
 app.use("/api", microgenerationRoute);
+app.use("/api", privateNotTransferredRoute);
 
 app.listen(port, () => {
   console.log(`Automate-reports-api app listening on port ${port}`);
