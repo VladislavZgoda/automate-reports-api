@@ -22,16 +22,12 @@ export default function deleteRows(
       .toUpperCase();
 
     if (!deviceTypeBool) {
-      console.log("device");
       ws.spliceRows(i, 1);
     } else if (!contractNumber?.startsWith("230700")) {
-      console.log("contarct");
       ws.spliceRows(i, 1);
     } else if (meteringPointName === "ОДПУ") {
-      console.log("name");
       ws.spliceRows(i, 1);
     } else if (meterInArray(uselessMeters, meter)) {
-      console.log("arr");
       ws.spliceRows(i, 1);
     } else {
       i += 1;
