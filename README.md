@@ -89,6 +89,21 @@ Request body:
 - balanceGroup: "private" === Быт | "legal" === Юридические лица
 Response: xlsx файл
 
+Route http://IP:PORT/api/private-not-transferred/
+Headers:
+- Authorization Bearer Token
+Request body:
+- simsFile: xlsx файл с выгрузкой активной энергии импорт из ПО Sims
+- reportNineFile: xlsx файл с отчётом Приложение №9
+Response: xlsx файл
+
+Route http://IP:PORT/api/one-zone-meters/
+Headers:
+- Authorization Bearer Token
+Request body:
+- simsFile: xlsx файл с выгрузкой активной энергии импорт из ПО Sims
+- oneZoneMetersFile: xlsx файл с серийными номерами счетчиков модели NP7x
+Response: xlsx файл
 
 Route http://IP:PORT/api/login/
 Request body:
