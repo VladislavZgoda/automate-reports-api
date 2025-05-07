@@ -1,4 +1,5 @@
 import exceljs from "exceljs";
+import { findInsertIndex } from "src/utils/binarySearch.ts";
 
 export default async function parseReportNine(
   filePath: string,
@@ -40,24 +41,4 @@ export default async function parseReportNine(
 
     uselessMeters.splice(insertIndex, 0, serialNumber);
   }
-}
-
-function findInsertIndex(arr: number[], elem: number) {
-  const length = arr.length;
-  let start = 0;
-  let end = length - 1;
-
-  while (start <= end) {
-    const mid = Number.parseInt(((start + end) / 2).toString());
-
-    if (arr[mid] === elem) {
-      return mid;
-    } else if (arr[mid] < elem) {
-      start = mid + 1;
-    } else {
-      end = mid - 1;
-    }
-  }
-
-  return end + 1;
 }

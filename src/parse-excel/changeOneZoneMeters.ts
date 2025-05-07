@@ -1,4 +1,5 @@
 import exceljs from "exceljs";
+import { meterInArray } from "src/utils/binarySearch.ts";
 
 export default function changeOneZoneMeters(
   wb: exceljs.Workbook,
@@ -32,25 +33,4 @@ function changeReadings(ws: exceljs.Worksheet, rowNumber: number) {
 
   ws.getCell("E" + rowNumber).value = activeEnergySum; // Active Energy T1
   ws.getCell("F" + rowNumber).value = 0; // Active Energy T2
-}
-
-function meterInArray(arr: readonly number[], meter: number) {
-  const length = arr.length;
-  let start = 0;
-  let end = length - 1;
-
-  while (start <= end) {
-    const mid = Number.parseInt(((start + end) / 2).toString());
-    const meterAtMid = arr[mid];
-
-    if (meter === meterAtMid) {
-      return true;
-    } else if (meter < meterAtMid) {
-      end = mid - 1;
-    } else if (meter > meterAtMid) {
-      start = mid + 1;
-    }
-  }
-
-  return false;
 }
