@@ -7,13 +7,13 @@ export default function changeOneZoneMeters(
 ) {
   const ws = wb.worksheets[0];
 
-  ws.getColumn("C").eachCell((cell, rowNumber) => {
-    const meter = Number(cell.text.trim());
+  for (let i = 3; i < ws.actualRowCount; i++) {
+    const meter = Number(ws.getCell("C" + i).text.trim());
 
     if (!isNaN(meter) && meterInArray(oneZoneMeters, meter)) {
-      if (checkDifference(ws, rowNumber)) changeReadings(ws, rowNumber);
+      if (checkDifference(ws, i)) changeReadings(ws, i);
     }
-  });
+  }
 }
 
 function checkDifference(ws: exceljs.Worksheet, rowNumber: number) {
