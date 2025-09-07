@@ -15,7 +15,7 @@ import { z } from "zod";
 const bodyWithoutFileSchema = z
   .object({
     balanceGroup: z.enum(["private", "legal"], {
-      message: "The form data is missing a balance group.",
+      error: "The form data is missing a balance group.",
     }),
     controller: z.string().optional(),
   })
@@ -24,7 +24,7 @@ const bodyWithoutFileSchema = z
       data.balanceGroup !== "private" ||
       (data.balanceGroup === "private" && data.controller),
     {
-      message: "The form data is missing a controller.",
+      error: "The form data is missing a controller.",
       path: ["controller"],
     },
   );

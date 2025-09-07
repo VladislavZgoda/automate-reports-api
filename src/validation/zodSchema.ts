@@ -8,5 +8,5 @@ export const payloadTokenSchema = z.object({
 });
 
 export const refreshTokenSchema = z.object({
-  token: z.string({ message: "You are not authenticated." }),
+  token: z.string({ error: "You are not authenticated." }),
 });

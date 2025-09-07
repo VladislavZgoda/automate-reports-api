@@ -10,7 +10,7 @@ import { z } from "zod";
 
 const balanceGroupSchema = z.object({
   balanceGroup: z.enum(["private", "legal"], {
-    message: "The form data is missing a balance group.",
+    error: "The form data is missing a balance group.",
   }),
 });
 
